@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="工具," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="flow是FB推出的代码静态检查工具，目的是让javascript开发者能“更快”，“更好”，“更有信心”地编写代码。在它出现之前，想要做JS的静态检查只能使用typescript，但是typescript相对javascript而言由于加入了很多新的语言特性，学习成本较高，而且对于旧项目基本上需要重写代码，在一定程度上增加了使用难度。当然两者各有优劣，使用两者之中的哪一个更多取决于团队的配置和">
+<meta name="keywords" content="工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="给JS添加静态类型检查-flowtype">
+<meta property="og:url" content="http://yoursite.com/2018/10/09/add-js-type-check-flow/index.html">
+<meta property="og:site_name" content="QiZhang&#39;s Blog">
+<meta property="og:description" content="flow是FB推出的代码静态检查工具，目的是让javascript开发者能“更快”，“更好”，“更有信心”地编写代码。在它出现之前，想要做JS的静态检查只能使用typescript，但是typescript相对javascript而言由于加入了很多新的语言特性，学习成本较高，而且对于旧项目基本上需要重写代码，在一定程度上增加了使用难度。当然两者各有优劣，使用两者之中的哪一个更多取决于团队的配置和">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/flow-typed-logo.png">
+<meta property="og:updated_time" content="2018-10-15T06:37:21.570Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="给JS添加静态类型检查-flowtype">
+<meta name="twitter:description" content="flow是FB推出的代码静态检查工具，目的是让javascript开发者能“更快”，“更好”，“更有信心”地编写代码。在它出现之前，想要做JS的静态检查只能使用typescript，但是typescript相对javascript而言由于加入了很多新的语言特性，学习成本较高，而且对于旧项目基本上需要重写代码，在一定程度上增加了使用难度。当然两者各有优劣，使用两者之中的哪一个更多取决于团队的配置和">
+<meta name="twitter:image" content="http://yoursite.com/images/flow-typed-logo.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/09/add-js-type-check-flow/"/>
+
+
+
+
+
+  <title>给JS添加静态类型检查-flowtype | QiZhang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">QiZhang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Life just like code</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/add-js-type-check-flow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杨骐彰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QiZhang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">给JS添加静态类型检查-flowtype</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-09T18:24:47+08:00">
+                2018-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端技术/" itemprop="url" rel="index">
+                    <span itemprop="name">前端技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/10/09/add-js-type-check-flow/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/10/09/add-js-type-check-flow/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/images/flow-typed-logo.png" alt=""></p>
+<p><a href="https://flow.org/" target="_blank" rel="noopener">flow</a>是FB推出的代码静态检查工具，目的是让javascript开发者能“更快”，“更好”，“更有信心”地编写代码。在它出现之前，想要做JS的静态检查只能使用typescript，但是typescript相对javascript而言由于加入了很多新的语言特性，学习成本较高，而且对于旧项目基本上需要重写代码，在一定程度上增加了使用难度。当然两者各有优劣，使用两者之中的哪一个更多取决于团队的配置和成本。在现阶段javascript应用功能愈发复杂，工程量越来越庞大的背景下，加入静态检查也变得愈发重要。</p>
+<a id="more"></a>
+<h2 id="什么是静态检查"><a href="#什么是静态检查" class="headerlink" title="什么是静态检查"></a>什么是静态检查</h2><p>总所周知，javascript是一门弱类型语言，也就是常说的动态语言，而<code>java</code>，<code>c#</code>，<code>c++</code>这些语言属于静态语言，即强类型语言。</p>
+<p>如果用js写一个求和函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">x, y</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> x + y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果使用c#</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">int add(int x, int y)&#123;</span><br><span class="line">  return x + y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来在某处使用 <code>add(&#39;x&#39;, 5)</code></p>
+<p>如果是js的话，编写时一切正常，因为在代码执行前，并不会抛出任何错误。</p>
+<p>但是如果是c#之类的强类型语言，在编程时，IDE就会抛出错误，告诉我们<code>&#39;x&#39;</code>参数不合法，编译也不会通过。</p>
+<p>这就是静态检查的优势，它能在程序运行之前就抛出一些可能的错误，开发人员在编程时就能规避这些问题，而不是在运行时。</p>
+<p>现在使用flow给刚刚的方法加入静态检查</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @flow</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">x: number, y: number</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> x + y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">add(<span class="string">'x'</span>, <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面是错误</span></span><br><span class="line">Cannot call add <span class="keyword">with</span> <span class="string">'x'</span> bound to x because string [<span class="number">1</span>] is incompatible <span class="keyword">with</span> number [<span class="number">2</span>].</span><br><span class="line"></span><br><span class="line"> [<span class="number">2</span>] <span class="number">29</span>│ <span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">x: number, y: number</span>) </span>&#123;</span><br><span class="line">     <span class="number">30</span>│   <span class="keyword">return</span> x + y;</span><br><span class="line">     <span class="number">31</span>│ &#125;</span><br><span class="line">     <span class="number">32</span>│</span><br><span class="line"> [<span class="number">1</span>] <span class="number">33</span>│ add(<span class="string">'x'</span>, <span class="number">5</span>);</span><br><span class="line">     <span class="number">34</span>│</span><br><span class="line">     <span class="number">35</span>│ <span class="keyword">export</span> <span class="keyword">default</span> store;</span><br><span class="line">     <span class="number">36</span>│</span><br></pre></td></tr></table></figure>
+<p>引入flow后，每当使用<code>flow</code>命令，或者在IDE上集成flow插件后，控制台都会抛出错误。这些错误在编写时就会抛出，而不需要在浏览器上运行，甚至有的隐式错误，加入静态检查后也能及时排查，这对开发效率以及提升代码健壮性都有很大的帮助。</p>
+<p>需要注意的是，flow是可开关的，只有在文件顶部注释上引入<code>// @flow</code>后，这个文件才会开启检查。也就是说，对于旧的项目可以渐进式地加入flow，而不需要整体重构。</p>
+<h2 id="初始化Flow"><a href="#初始化Flow" class="headerlink" title="初始化Flow"></a>初始化Flow</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>首先通过npm安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i flow-bin</span><br></pre></td></tr></table></figure>
+<p>然后添加脚本到<code>package.json</code></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">"flow": "npm run flow"</span><br></pre></td></tr></table></figure>
+<h3 id="添加编辑器支持-For-vscode"><a href="#添加编辑器支持-For-vscode" class="headerlink" title="添加编辑器支持(For vscode)"></a>添加编辑器支持(For vscode)</h3><p>在扩展程序中搜索<code>Flow Language Support</code>，安装重启后，<code>问题面板</code>会出现flow的错误提示。</p>
+<p>更多详情请参考：<a href="https://flow.org/en/docs/install/" target="_blank" rel="noopener">安装</a></p>
+<h2 id="类型声明"><a href="#类型声明" class="headerlink" title="类型声明"></a>类型声明</h2><p>使用类型声明（Type Annotations）是使用flow的第一步。如上文的例子，加入类型声明后，flow会知道你的参数，变量，函数等属于哪种类型，如果传入了不匹配的类型，就会抛出错误。</p>
+<h3 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h3><p>flow对javascript的几种基本数据类型预设有对应的声明类型。（如果你对基本数据类型不是很清楚，点击<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures" target="_blank" rel="noopener">这里</a>）</p>
+<p>数据类型 -&gt; 声明</p>
+<ul>
+<li>String -&gt; string</li>
+<li>Boolean -&gt; boolean</li>
+<li>Number -&gt; number</li>
+<li>null -&gt; null</li>
+<li>undefined -&gt; void</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a:string = <span class="string">'a'</span>; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">let</span> b:number = <span class="number">1</span>; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">let</span> c:boolean = <span class="literal">false</span>; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">let</span> d:boolean = <span class="string">'1'</span>; <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<p>如果数据被包裹成了对象，那么类型名称要使用大写。</p>
+<p>示例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a:<span class="built_in">String</span> = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">'a'</span>); <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">let</span> b:<span class="built_in">Number</span> = <span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">1</span>); <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">let</span> c:string = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">'a'</span>); <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<p>flow并不会自动转化数据类型，即使对<code>string</code>类型传入<code>new String(&#39;1&#39;)</code>，仍然不会通过检查。</p>
+<blockquote>
+<p>注意<code>new String(&#39;a&#39;)</code> 和<code>String(&#39;a&#39;)</code> 返回的不是一种类型，前者返回<code>String</code>对象实例，后者返回基础数据类型<code>string</code>。</p>
+</blockquote>
+<p><a id="maybe-type"></a></p>
+<h3 id="可选类型"><a href="#可选类型" class="headerlink" title="可选类型"></a>可选类型</h3><p>在js中很多函数参数是可选的，使用可选类型<code>Maybe Type</code>可以很方便地对此种参数进行声明。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//@flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">returnNameOrDefault</span> (<span class="params">name: ?string</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> name || <span class="string">'hello'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">returnNameOrDefault(<span class="string">'aaa'</span>); <span class="comment">// Works!</span></span><br><span class="line">returnNameOrDefault(); <span class="comment">// Works!</span></span><br><span class="line">returnNameOrDefault(<span class="literal">null</span>); <span class="comment">// Works!</span></span><br><span class="line">returnNameOrDefault(<span class="literal">undefined</span>); <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>当一个参数是可选类型时，传入<code>null</code>，<code>undefined</code>均是合法的。</p>
+</li>
+<li><p>如果一个参数有默认属性 <code>(name: string = &#39;hello&#39;)</code>，这个参数也是可选的，但是不能传入<code>null</code>。</p>
+</li>
+<li><p>除了函数参数是可选的，对象属性也可以声明成可选的。与参数不同的是：<strong>对象的可选属性只能为undefined或者未定义，而不能为null</strong></p>
+</li>
+</ol>
+<p><a href="https://flow.org/try/#0GYVwdgxgLglg9mABAJwKZRMsA5AhgW1QHlkARVYXEAGygAoQBnVZALkQG9EwDUB+doyjIYYAOaIAvgEpOAKESIA9ErmS5ctBix5CJcpRr0uPQuwBEAI1zJzU6QG5FzlYiIBpTekw5e+ilS0dCa87OAAJhSiqOH2Tq4eXtq+emQBRsHcodw01HHOLkqIAOrICGIAhEk+usRphkEcMk6KQA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//@flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">returnNameOrDefault</span>(<span class="params">user: &#123; name?: string &#125;</span>) </span>&#123;</span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">returnNameOrDefault(&#123; <span class="attr">name</span>: <span class="string">"bar"</span> &#125;);     <span class="comment">// Works!</span></span><br><span class="line">returnNameOrDefault(&#123; <span class="attr">name</span>: <span class="literal">undefined</span> &#125;); <span class="comment">// Works!</span></span><br><span class="line">returnNameOrDefault(&#123; <span class="attr">name</span>: <span class="literal">null</span> &#125;);      <span class="comment">// Error!</span></span><br><span class="line">returnNameOrDefault(&#123;&#125;);                 <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<h3 id="文字类型"><a href="#文字类型" class="headerlink" title="文字类型"></a>文字类型</h3><p>文字类型比较简单，声明后只能接受单个特定的数据。</p>
+<p><a href="https://flow.org/try/#0GYVwdgxgLglg9mABAQwhApgBygZwCoDucAFAG7IA2I6AXIgEwCUiA3gFCKID0XiAdALYBfNm1QZs+IsSbdeAeQDSYtFlyESAcnqbmPRAHUATggDmAQhUT104JRzo9vY2fNA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">acceptsTwo</span>(<span class="params">value: <span class="number">2</span></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">acceptsTwo(<span class="number">2</span>) <span class="comment">// Works!</span></span><br><span class="line">acceptsTwo(<span class="string">'2'</span>) <span class="comment">// Error!</span></span><br><span class="line">acceptsTwo(<span class="literal">false</span>) <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<h3 id="混合类型（mixed）"><a href="#混合类型（mixed）" class="headerlink" title="混合类型（mixed）"></a>混合类型（mixed）</h3><p>当变量可能有多种类型的时，可以使用<code>mixed</code>进行声明。但是使用<code>mixed</code>声明的变量时必须对其类型进行判断，不然flow会抛出错误。</p>
+<p><code>mixed</code>也是一种安全的声明，使用它并不是说就可以为所欲为，这点和<code>any</code>（下面会说）有本质上的区别。</p>
+<p><a href="https://flow.org/try/#0GYVwdgxgLglg9mABKSsEBE4FkQQBYAqeMYA5gM6IAUADgIYBOdAtuQFyLMwAeApgCYBKRAG8AUIkQxgVKAE8avOMET0mrRAF5tiAOTkoDEqV3DxkyQ15QQDJGpaUA1HsQBCXQG5EAeh+IAeQBpCUQAXzFQqxs7SQcNF113L19-AHUGBFI3MTCgA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//@flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">functionDoManyThings</span> (<span class="params">params: mixed</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(typof params === <span class="string">'string'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> params + <span class="string">' !'</span>; <span class="comment">// Works!</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span>  params + <span class="string">' !'</span>; <span class="comment">// Error!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="任意类型（any）"><a href="#任意类型（any）" class="headerlink" title="任意类型（any）"></a>任意类型（any）</h3><p>一旦对变量声明为<code>any</code>，意味着flow不会对这种类型的数据进行检查。如果你的声明全部是<code>any</code>，那就和普通的javascript文件没有区别了。因此在开发时应该尽量避免使用<code>any</code>进行声明。</p>
+<p>此外，<code>any</code>声明的变量后续处理的数据都会变成<code>any</code>类型，造成的后果是整个调用链都会失去静态检查。</p>
+<p><a href="https://flow.org/try/#0GYVwdgxgLglg9mABAEzgZTgWwKZQBYxgDmAFHAEYBWAXIgIZgCeAlIgN4BQiiANrohEQBeRBUoA6MCEwBuRAHp5iQCvxgPbVAPAqB9OUD0Zg0ZdEAJ1whDSCDI4BfDh1CRYCRAAc6AZzdoohwqTffafx9iVk4bDggEf3phFHQsXAJiEjZEKUxaABZEK2ZLDlcPL2DSOjygA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//@flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doSomething</span>(<span class="params">obj: any</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> c = obj.num; <span class="comment">// 返回值也是any</span></span><br><span class="line">  <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">passString</span>(<span class="params">str: string</span>) </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> a = doSomething(&#123; <span class="attr">num</span>: <span class="number">4</span> &#125;);</span><br><span class="line"></span><br><span class="line">passString(a); <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<p>为了避免这种情况，应该尽量对已知变量标记类型：<code>let c:number = obj.num;</code></p>
+<p>当然，在某些场景下还是可以使用<code>any</code>的</p>
+<ol>
+<li>确实无法判断数据的类型，例如未加入flow的三方库。</li>
+<li>因flow本身造成的无法排除的错误。</li>
+</ol>
+<p><a id="bian-liang-lei-xing"></a></p>
+<h3 id="变量类型"><a href="#变量类型" class="headerlink" title="变量类型"></a>变量类型</h3><p>当使用<code>let</code>，<code>const</code>，<code>var</code>初始化变量时，flow会隐式的自动生成声明。例如 <code>let a = 1</code> ,flow会自动把<code>a</code>标记成<code>number</code>类型。</p>
+<p>此外flow有很强大的推导能力，可以自动分析代码并找出可能的错误。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"><span class="keyword">let</span> foo = <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mutate</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  foo = <span class="literal">true</span>;</span><br><span class="line">  foo = <span class="string">"hello"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">mutate();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> isString: string = foo; <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<h3 id="函数类型-Function-Types"><a href="#函数类型-Function-Types" class="headerlink" title="函数类型(Function Types)"></a>函数类型(Function Types)</h3><h4 id="对函数进行声明"><a href="#对函数进行声明" class="headerlink" title="对函数进行声明"></a>对函数进行声明</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a: number, b: number</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>得益于flow的自动推导能力，对于有些函数并不需要指定参数的类型。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">add(<span class="number">1</span>, <span class="number">2</span>); <span class="comment">// Works!</span></span><br><span class="line">add(<span class="number">1</span>, <span class="string">'2'</span>); <span class="comment">// Works!</span></span><br><span class="line">add(<span class="string">'1'</span>, <span class="string">'2'</span>); <span class="comment">// Works!</span></span><br><span class="line">add(<span class="literal">true</span>, <span class="string">'2'</span>); <span class="comment">// Error!</span></span><br><span class="line">add(&#123;&#125;, <span class="string">'2'</span>); <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<h4 id="声明函数类型"><a href="#声明函数类型" class="headerlink" title="声明函数类型"></a>声明函数类型</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">(a: number, <span class="attr">b</span>: number) =&gt; number</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可选参数</span></span><br><span class="line">(a: number, <span class="attr">b</span>: ?number) =&gt; number</span><br><span class="line"></span><br><span class="line"><span class="comment">// rest params</span></span><br><span class="line">(a: number, <span class="attr">b</span>: number, ...rest:<span class="built_in">Array</span>&lt;number&gt;) =&gt; number</span><br></pre></td></tr></table></figure>
+<h4 id="函数的this"><a href="#函数的this" class="headerlink" title="函数的this"></a>函数的this</h4><p>flow不需要指定函数的this，它自动分析运行函数时的上下文。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">method</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> num: number = method.call(<span class="number">42</span>); <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">var</span> str: string = method.call(<span class="number">42</span>); <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<h4 id="断言函数"><a href="#断言函数" class="headerlink" title="断言函数"></a>断言函数</h4><p>有时候flow可能会让人感觉困惑，比如这种情况。</p>
+<p>示例:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">concat</span>(<span class="params">a: ?string, b: ?string</span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (a &amp;&amp; b) &#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果把判断逻辑封装成函数，就会抛出异常</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">truthy</span>(<span class="params">a, b</span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a &amp;&amp; b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">concat</span>(<span class="params">a: ?string, b: ?string</span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (truthy(a, b)) &#123;</span><br><span class="line">    <span class="comment">// Error!</span></span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这确实让人迷惑，但是也是情理之中，因为声明新函数后，函数的内部逻辑是未知的，也许开发者并没有判断<code>a</code>和<code>b</code>的值就直接返回<code>true</code>了呢？就会导致<code>concat</code>方法返回一个意料之外的值。</p>
+<p>为了应对这种情况，flow提供一个<code>%checked</code>语法将一个函数声明成断言函数。当一个函数声明成断言函数后，函数内部不能声明任何变量，此外flow会对函数体逻辑进行推导，保证返回值和业务逻辑相匹配。</p>
+<p>经过改造后，<code>truthy</code>函数就会变成这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">function truthy(a, b): boolean %checks &#123;</span><br><span class="line">  <span class="keyword">return</span> !!a &amp;&amp; !!b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">concat</span>(<span class="params">a: ?string, b: ?string</span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (truthy(a, b)) &#123;</span><br><span class="line">    <span class="comment">// Error!</span></span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为断言函数始终返回<code>boolean</code>类型，所以返回值声明<code>: boolean %checks</code>可以简写成<code>: %checks</code>。</p>
+<h4 id="Function类型"><a href="#Function类型" class="headerlink" title="Function类型"></a>Function类型</h4><p>一旦声明成<code>Function</code>类型，这个函数的返回值和参数可以为任意值，应该尽量避免使用。</p>
+<h3 id="Object类型"><a href="#Object类型" class="headerlink" title="Object类型"></a>Object类型</h3><p>object在javascript中有很多种不同的使用方式，对于这些使用方式flow也提供了多种声明的方法。</p>
+<h4 id="对象声明语法"><a href="#对象声明语法" class="headerlink" title="对象声明语法"></a>对象声明语法</h4><p>声明一个对象类型和声明一个对象类似。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj: &#123; <span class="attr">foo</span>: number &#125; = &#123; <span class="attr">foo</span>: <span class="number">123</span> &#125;;</span><br><span class="line"></span><br><span class="line">obj.foo; <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<p>如果尝试访问或赋值未声明的属性，flow会认为该属性是不存在的并抛出错误。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 接上面的例子...</span></span><br><span class="line"></span><br><span class="line">obj.bar; <span class="comment">// Error!</span></span><br><span class="line">obj.bar = <span class="string">'xxx'</span>; <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<p>在<a href="#maybe-type">可选参数</a>部分提到过对象属性可以声明成可选的。</p>
+<p><a href="https://flow.org/try/#0FAGwpgLgBA9gRgKwFxQN5QGYxgfhQOwFcBbOMAJygF8oBeNTbFARgCYBmagbmGHgQB0WGFygB6MVADyAaT6Ih2OlEL4AJmAwBLfGDWiJ0uf0UxlRECAOSA6uRj4A5gEJ5g4coDkAD1+frUHYOLkA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj: &#123; foo?: number &#125; = &#123; <span class="attr">foo</span>: <span class="number">123</span> &#125;;</span><br><span class="line"></span><br><span class="line">obj.foo; <span class="comment">// Works!</span></span><br><span class="line">obj.foo = <span class="literal">undefined</span>; <span class="comment">// Works!</span></span><br><span class="line">obj.foo = <span class="literal">null</span>; <span class="comment">// Error!</span></span><br><span class="line">obj.foo = <span class="string">'xxx'</span>; <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<h4 id="对象类型推导"><a href="#对象类型推导" class="headerlink" title="对象类型推导"></a>对象类型推导</h4><p>如果没有显式地声明类型，flow会自动推导对象的类型，推导的结果取决于使用对象的方式。</p>
+<h5 id="封闭对象"><a href="#封闭对象" class="headerlink" title="封闭对象"></a>封闭对象</h5><p>如果创建一个拥有多个属性的对象（这里称为封闭对象），flow会推导出这个对象的类型，与显式地声明对象类型效果一致。</p>
+<p><a href="https://flow.org/try/#0G4QwTgBA9gRgVhAvBA3gKAhAZlKAuCAcgA9TCAaNAXwG401RIQCBnAFzAEsA7AcyWjwAdDig0IAegkQA8gGkG4CDALcArgFsYAU0jJYcEbnFSIAdTBQ+AQkWQAxqw49++4THAnpFq72tA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">  foo: <span class="string">'xxx'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a: string = obj.foo; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">var</span> b: number = obj.foo; <span class="comment">// Error!</span></span><br><span class="line"><span class="keyword">var</span> c: string = obj.bar; <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<h5 id="开放对象"><a href="#开放对象" class="headerlink" title="开放对象"></a>开放对象</h5><p>如果创建一个空的对象（{}），就创建了一个开放对象。开放对象的属性类型是未知的，所以允许添加新的属性。但是这并不是说flow不会检查开放对象的属性，相反地，flow会对属性的类型像<a href="#bian-liang-lei-xing">变量类型</a>一样进行推导。</p>
+<p><a href="https://flow.org/try/#0PTAEAEDMBsHsHcBQiBuBDATqWAjAVqALygDeAvgNzK54B0kssRoA5AIwBMAzC1apqDQAuAM4AXDAEsAdgHNmNeowqgQoAPIBpflhxDpAVwC2OAKZZiihrBVqA6hlhyAhMkmQAFAFk0YgBa0GGjSACawRh4AlKAAfKAADLQArNEkiKDY+LQ4AsScXFRkoKbQIqak6Zl0ORagkGilpoXI6FgAxvrGZlgAPqA4jNCmwQpZNbZgWjqgIZ0m5qPVmBMamkA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">obj.foo = <span class="string">'123'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a:string = obj.foo; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">var</span> b:number = obj.foo; <span class="comment">// Error!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="built_in">Math</span>.random() &gt; <span class="number">0.5</span>) &#123;</span><br><span class="line">  obj.bar = <span class="number">123</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  obj.bar = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> c:number | boolean = obj.bar; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">var</span> d:number = obj.bar; <span class="comment">// Wrong！</span></span><br></pre></td></tr></table></figure>
+<p>由于加入了条件语句，flow在进行推导后得出<code>obj.bar</code>可能为<code>boolean</code>或者<code>number</code>，所以对<code>d:number</code>赋值时抛出了错误，真的是超级智能有没有？</p>
+<p>需要注意的是，对于开放的对象来说，由于在编写代码时可能在任何地方对该对象进行属性赋值，所以flow并不确定某个属性是否存在，因此不会对不确定的属性进行类型检查。如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">obj.foo = <span class="number">1</span>;</span><br><span class="line">obj.bar = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo: number  = obj.foo; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">var</span> bar: boolean = obj.bar; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">var</span> baz: string  = obj.baz; <span class="comment">// flow无法确定，不会检查，默认通过。</span></span><br></pre></td></tr></table></figure>
+<p><a id="yan-ge-pi-pei-type"></a></p>
+<h5 id="严格匹配类型"><a href="#严格匹配类型" class="headerlink" title="严格匹配类型"></a>严格匹配类型</h5><p>在flow中，如果传入一个有额外属性的对象被认为是安全的。比如</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">func</span>(<span class="params">obj: &#123;foo: number&#125;</span>)</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">func(&#123;<span class="attr">foo</span>: <span class="number">123</span>, <span class="attr">bar</span>: <span class="string">'string'</span>&#125;); <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<p>如果需要强制限定只能传入声明的属性，可以在给声明的对象加入<code>|</code>边界，将其声明成严格匹配类型。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">func</span>(<span class="params">obj: &#123;|foo: number|&#125;</span>)</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">func(&#123;<span class="attr">foo</span>: <span class="number">123</span>&#125;); <span class="comment">// Works!</span></span><br><span class="line">func(&#123;<span class="attr">foo</span>: <span class="number">123</span>, <span class="attr">bar</span>: <span class="string">'string'</span>&#125;); <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是，如果一个对象声明成为了严格类型，混合对象类型只能使用对象延展，而不能使用交叉类型(Intersections Type)。</p>
+<blockquote>
+<p>交叉类型(Intersections Type)在下文会有详解。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">type FooT = &#123;| foo: string |&#125;;</span><br><span class="line">type BarT = &#123;| bar: number |&#125;;</span><br><span class="line"></span><br><span class="line">type FooBarFailT = FooT &amp; BarT;</span><br><span class="line">type FooBarT = &#123;| ...FooT, ...BarT |&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> fooBarFail: FooBarFailT = &#123; <span class="attr">foo</span>: <span class="string">'123'</span>, <span class="attr">bar</span>: <span class="number">12</span> &#125;; <span class="comment">// Error!</span></span><br><span class="line"><span class="keyword">const</span> fooBar: FooBarT = &#123; <span class="attr">foo</span>: <span class="string">'123'</span>, <span class="attr">bar</span>: <span class="number">12</span> &#125;; <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<h5 id="对象映射"><a href="#对象映射" class="headerlink" title="对象映射"></a>对象映射</h5><p>flow提供了一种特殊的属性声明：索引属性，可以让对象添加任意符合键值类型的属性。</p>
+<p><a href="https://flow.org/try/#0PTAEAEDMBsHsHcBQiBuBDATqWAjAVqAFygDeA2gM4AuGAlgHYDmAusfQK4C2OAphgL6gAvKX4BuZCFCAiX0Co+oFgVQA+ege+VAkAmAYf8CjcoB15QOGmgYwtA-vKAKV0RT0WXAWLl6aTj2LU6TVqA7c+gkSXHIrZADkANa0VFQAnoHMwqAAjABMAMxioFIA8gDSiAEhYZHRsYGJSYGpUgDqGLBMAIT++EF4sAAW9NEAdFSwAGK0AB48ACYAFAAMAJTlYFlAA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj : &#123;[string]: number&#125; = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 索引名称可选，仅作文档使用</span></span><br><span class="line"><span class="comment">// var obj : &#123;[name: string]: number&#125; = &#123;&#125;;</span></span><br><span class="line"></span><br><span class="line">obj[<span class="string">'kitty'</span>] = <span class="number">123</span>; <span class="comment">// Works!</span></span><br><span class="line">obj[<span class="string">'kitty'</span>] = <span class="string">'123'</span>; <span class="comment">// Error!</span></span><br><span class="line"></span><br><span class="line">obj[<span class="string">'john'</span>].toFixed(<span class="number">0</span>); <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是，使用索引属性时flow并不能知道属性的是否存在，因此不会对属性进行检查，这点和开放对象是类似的。如上面的<code>obj[&#39;john&#39;].toFixed(0);</code>只有在运行时才会抛出错误。</p>
+<h5 id="Object类型-1"><a href="#Object类型-1" class="headerlink" title="Object类型"></a><code>Object</code>类型</h5><p>一旦变量声明成<code>Object</code>，传入任意对象都是合法的。只有在参数是对象但又无法确定对象的属性时才能使用，否则应该尽量避免使用它。</p>
+<h3 id="数组类型"><a href="#数组类型" class="headerlink" title="数组类型"></a>数组类型</h3><h4 id="声明数组"><a href="#声明数组" class="headerlink" title="声明数组"></a>声明数组</h4><p>有2种方式声明数组类型，<code>Array&lt;T&gt;</code>和<code>T[]</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr:<span class="built_in">Array</span>&lt;number&gt; = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">var</span> arrShort:number[] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br></pre></td></tr></table></figure>
+<h4 id="不安全访问"><a href="#不安全访问" class="headerlink" title="不安全访问"></a>不安全访问</h4><p>访问一个数组类型的数组是不安全的，flow无法对齐进行检查。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> arr: <span class="built_in">Array</span>&lt;number&gt; = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"><span class="keyword">let</span> val: number = array[<span class="number">3</span>]; <span class="comment">// Works!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span>.toFixed(<span class="number">1</span>); <span class="comment">// 运行时报空指针异常</span></span><br></pre></td></tr></table></figure>
+<p>为了让类型是安全的，在取值时应该对变量额外加入<code>void</code>声明。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> arr: <span class="built_in">Array</span>&lt;number&gt; = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"><span class="keyword">let</span> val: number | <span class="keyword">void</span> = array[<span class="number">3</span>]; <span class="comment">// Works!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(val !=== <span class="literal">undefined</span>)&#123;</span><br><span class="line">  <span class="keyword">var</span>.toFixed(<span class="number">1</span>); <span class="comment">// 这样访问时安全的</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="只读数组"><a href="#只读数组" class="headerlink" title="只读数组"></a>只读数组</h5><p>如果需要将一个数组声明成只读，只需要将<code>Array&lt;T&gt;</code>换成<code>$ReadOnlyArray&lt;T&gt;</code>即可。</p>
+<p>只读数组无法增加或者删除元素，但是元素自身的属性是可修改的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"><span class="keyword">const</span> readonlyArray: $ReadOnlyArray&lt;&#123;<span class="attr">x</span>: number&#125;&gt; = [&#123;<span class="attr">x</span>: <span class="number">1</span>&#125;];</span><br><span class="line">readonlyArray[<span class="number">0</span>] = &#123;<span class="attr">x</span>: <span class="number">42</span>&#125;; <span class="comment">// Error!</span></span><br><span class="line">readonlyArray[<span class="number">0</span>].x = <span class="number">42</span>; <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<p>使用只读数组还有个好处就是，<code>$ReadOnlyArray&lt;number|string&gt;</code>是<code>$ReadOnlyArray&lt;number&gt;</code>的子类型，但是<code>Array&lt;number|string&gt;</code>并不是<code>Array&lt;number&gt;</code>的子类型。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"><span class="keyword">const</span> someOperation = <span class="function">(<span class="params">arr: <span class="built_in">Array</span>&lt;number | string&gt;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 可能执行arr.push('123')操作</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array: <span class="built_in">Array</span>&lt;number&gt; = [<span class="number">1</span>];</span><br><span class="line">someOperation(array) <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<p>这个示例中，<code>array</code>是<code>Array&lt;number&gt;</code>类型，作为参数传入<code>someOperation</code>会报错误。因为<code>someOperation</code>希望接受的参数是<code>Array&lt;number | string&gt;</code>，而在函数内部可能会执行<code>pop(&#39;123&#39;)</code>这样的插入操作，对<code>arr</code>参数的声明而言这是合法的，但对于<code>array</code>却是非法的，因为它只能接受<code>number</code>类型的数据。</p>
+<p>在这种情况下，<code>arr</code>只能声明成<code>$ReadOnlyArray&lt;number|string&gt;</code>只读类型，这样可以保证<code>arr</code>参数不会改变，flow就可以保证<code>array</code>对象是安全的，也就不会报错了。</p>
+<p><a href="https://flow.org/try/#0PTAEAEDMBsHsHcBQBjWA7AzgF1B2BbAUwHkAHQgJwEMsBLdUAXlAAoqKKAuUAEgCVCVACbE00AJ4BBDlXEAeNAFd8AI0qgAPriwVaaAOYA+AJRNDoAN6JQoEKED3yoF+AwOZGgGQj2FAHSlFGABYsAOQAjABMAMyBxoCzJoA68ogAvogo6NigHrLc0tTySqqU5swA2sEAugDciHhEZJQ09GhsMuLG5UA" target="_blank" rel="noopener">示例</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"><span class="keyword">const</span> someOperation = <span class="function">(<span class="params">arr: $ReadOnlyArray&lt;number | string&gt;</span>) =&gt;</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array: <span class="built_in">Array</span>&lt;number&gt; = [<span class="number">1</span>];</span><br><span class="line">someOperation(array) <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<h3 id="元祖类型-Tuple-Types"><a href="#元祖类型-Tuple-Types" class="headerlink" title="元祖类型(Tuple Types)"></a>元祖类型(Tuple Types)</h3><p>元祖数据是由数组创建的长度和内容确定的一组数据，类似于数据库表的一条记录。</p>
+<p>flow使用<code>[type, type, type]</code>声明这一类数据，与数组不同的是，内部元素的状态是可检查的。如果访问越界的索引，也会抛出错误。</p>
+<p><a href="https://flow.org/try/#0DYUwLgBGCuAOoEYBcBtAdtAtgIxAJwBoIBnMPASzQHMiMd8BdCAXghQSIHIArAewAs0nIggCsDANwAoKaEgBDJHVx4WUOIhQAGSRAD0eiAHkA0rPARsSUhWpqY8EAna6Dxs3IgBjJNl69QeTR7DScUACZXQwB1PF5qAEJzSAATazJKKhDHZwBmKIhY+KokzxAkADdechTszXyJfUNTBKA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> tuple1:[number, string, number] = [<span class="number">1</span>, <span class="string">'john'</span>, <span class="number">15</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a:number = tuple1[<span class="number">0</span>]; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">let</span> b:string = tuple1[<span class="number">1</span>]; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">let</span> c:boolean = tuple1[<span class="number">2</span>]; <span class="comment">// Error!</span></span><br><span class="line"><span class="keyword">let</span> d:<span class="keyword">void</span> = tuple1[<span class="number">3</span>]; <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<p>此外，元祖类型还有以下特点</p>
+<ol>
+<li>只能匹配长度相同的类型</li>
+<li>与任何数组类型都不匹配</li>
+<li>不能使用改变<code>push</code>，<code>pop</code>等方法改变数据</li>
+</ol>
+<h3 id="类类型-Class-Types"><a href="#类类型-Class-Types" class="headerlink" title="类类型(Class Types)"></a>类类型(Class Types)</h3><p>在Flow中，声明的类（Class）不仅是值，还可以当做类型来使用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> myInstance: MyClass = <span class="keyword">new</span> MyClass();</span><br></pre></td></tr></table></figure>
+<h4 id="类方法"><a href="#类方法" class="headerlink" title="类方法"></a>类方法</h4><p>声明一个类方法和声明函数类型一致。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">  method(value: string): <span class="keyword">void</span> &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="类属性"><a href="#类属性" class="headerlink" title="类属性"></a>类属性</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">  method(value: string): <span class="keyword">void</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.value = value; <span class="comment">// Error!</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果在类方法中访问一个未声明的属性，flow会抛出错误，需要添加属性的声明。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">  value: string</span><br><span class="line"></span><br><span class="line">  method(value: string): <span class="keyword">void</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.value = value; <span class="comment">// Works!!</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果使用类属性语法设置了值，flow会对属性类型进行推导，不需要显式的声明类型。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">  value = <span class="string">'hello'</span></span><br><span class="line"></span><br><span class="line">  method(value: string): <span class="keyword">void</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.value = value; <span class="comment">// Works!!</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="类泛型"><a href="#类泛型" class="headerlink" title="类泛型"></a>类泛型</h4><p>类同样支持泛型</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span>&lt;<span class="title">A</span>, <span class="title">B</span>, <span class="title">C</span>&gt; </span>&#123;</span><br><span class="line">  property: A;</span><br><span class="line">  method(val: B): C &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> val: MyClass&lt;number, boolean, string&gt; = <span class="keyword">new</span> MyClass(<span class="number">1</span>, <span class="literal">true</span>, <span class="string">'three'</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="标称和结构"><a href="#标称和结构" class="headerlink" title="标称和结构"></a>标称和结构</h4><p>需要注意的是，flow支持类的是<code>标称类型</code>，而不是<code>结构类型</code>，意味着相同结构的类并不是匹配的。</p>
+<p><a href="https://flow.org/try/#0MYGwhgzhAECyCeBhcUCC0DeAoa0BuYIArgKYBc0EALgE4CWAdgOZY7QC2JVAFgPYAmACgLFylWoyYBKCnl51+mNgF8sqrKEgwEyLQCEluEaQrV6zVrk48BwwifHnps+Yuy5V6kFw7wAkgzUYAzAYjooEAYAvNAMJADucEgRqIJSANzQAPRZ0ADqNLzMAIRAA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClassA</span> </span>&#123;</span><br><span class="line">  value: string</span><br><span class="line"></span><br><span class="line">  method(value: string): <span class="keyword">void</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClassB</span> </span>&#123;</span><br><span class="line">  value: string</span><br><span class="line"></span><br><span class="line">  method(value: string): <span class="keyword">void</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> myInstance: MyClassB = <span class="keyword">new</span> MyClassA(); <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<p>虽然<code>MyClassA</code>和<code>MyClassB</code>结构一致，但是类型并不匹配。<a href="https://flow.org/en/docs/lang/nominal-structural/" target="_blank" rel="noopener">这里</a>是官方说明。</p>
+<h3 id="类型别名-Type-Aliases"><a href="#类型别名-Type-Aliases" class="headerlink" title="类型别名(Type Aliases)"></a>类型别名(Type Aliases)</h3><p>上面都是在变量，函数等上面声明类型，但是如果有的类型想要进行复用要怎么办呢？flow提供了<code>type</code>关键字，帮助声明可以复用的类型别名。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">type MyObject = &#123;</span><br><span class="line">  foo: number,</span><br><span class="line">  bar: boolean,</span><br><span class="line">  baz: string,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">func</span>(<span class="params">a: MyObject, b: MyObject</span>)</span>&#123;<span class="comment">/**/</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj1: MyObject = &#123;<span class="attr">foo</span>: <span class="number">1</span>, <span class="attr">bar</span>:<span class="literal">true</span>, <span class="attr">baz</span>: <span class="string">'a'</span>&#125;;</span><br><span class="line"><span class="keyword">var</span> obj2: MyObject = &#123;<span class="attr">foo</span>: <span class="number">2</span>, <span class="attr">bar</span>:<span class="literal">false</span>, <span class="attr">baz</span>: <span class="string">'b'</span>&#125;;</span><br><span class="line">func(obj1, obj2);</span><br></pre></td></tr></table></figure>
+<h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><p>类型别名用<code>type</code>进行声明，并且可以用<code>=</code>相互赋值</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">type Type = &#123;</span><br><span class="line">  foo: number,</span><br><span class="line">  bar: boolean,</span><br><span class="line">  baz: string,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">type AnotherType = Type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj1: AnotherType = &#123;<span class="attr">foo</span>: <span class="number">1</span>, <span class="attr">bar</span>:<span class="literal">true</span>, <span class="attr">baz</span>: <span class="string">'a'</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>类型别名也支持泛型</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line">type MyObject&lt;A, B, C&gt; = &#123;</span><br><span class="line">  foo: A,</span><br><span class="line">  bar: B,</span><br><span class="line">  baz: C,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> val: MyObject&lt;number, boolean, string&gt; = &#123;</span><br><span class="line">  foo: <span class="number">1</span>,</span><br><span class="line">  bar: <span class="literal">true</span>,</span><br><span class="line">  baz: <span class="string">'three'</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="接口类型-Interface-Types"><a href="#接口类型-Interface-Types" class="headerlink" title="接口类型(Interface Types)"></a>接口类型(Interface Types)</h3><p>上面提到flow支持类的是<code>标称类型</code>，而不是<code>结构类型</code>，意味着相同结构的类并不是匹配的。如果想要让具有相同结构的类能共用一种声明结构呢？flow提供了<code>interface</code>关键字来声明一种数据结构。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClassA</span> </span>&#123;</span><br><span class="line">  value: string</span><br><span class="line"></span><br><span class="line">  method(value: string): <span class="keyword">void</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClassB</span> </span>&#123;</span><br><span class="line">  value: string</span><br><span class="line"></span><br><span class="line">  method(value: string): <span class="keyword">void</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface IMyClass &#123;</span><br><span class="line">  value: string</span><br><span class="line"></span><br><span class="line">  method(value: string): <span class="keyword">void</span> &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> myInstance: IMyClass = <span class="keyword">new</span> MyClassA(); <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<p>也可以使用<code>implements</code>关键字对类的实现做约束</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line">interface Serializable &#123;</span><br><span class="line">  serialize(): string;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> <span class="title">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">  serialize() &#123; <span class="keyword">return</span> <span class="string">'[Foo]'</span>; &#125; <span class="comment">// Works!</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bar</span> <span class="title">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">  <span class="comment">// $ExpectError</span></span><br><span class="line">  serialize() &#123; <span class="keyword">return</span> <span class="number">42</span>; &#125; <span class="comment">// Error!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不难看出，<code>interface</code>和很多静态语言的语法一样，声明了类的属性和方法，拥有相同<code>interface</code>实现的类之间是类型安全的。</p>
+<p>类还可以实现多个接口</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> <span class="title">implements</span> <span class="title">Bar</span>, <span class="title">Baz</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Interface语法"><a href="#Interface语法" class="headerlink" title="Interface语法"></a>Interface语法</h4><p><code>interface</code>的声明和对象的声明基本一致。</p>
+<h4 id="不可变数据"><a href="#不可变数据" class="headerlink" title="不可变数据"></a>不可变数据</h4><p><code>interface</code>类型的属性是默认不变（invariant）的，但是可以通过额外的修饰符将其声明成协变（covariant）或逆变（contravariant）。这几个名词可能让人有点迷惑，在这里我们简单理解成只读和只写就好了。</p>
+<blockquote>
+<p>invariant的概念后面会单独用文章来说明。有兴趣的同学可以先看看<a href="https://flow.org/en/docs/lang/variance/" target="_blank" rel="noopener">官方文档</a>。</p>
+</blockquote>
+<ul>
+<li>covariant类型允许传入更加确定的属性，且数据是只读的</li>
+<li>contravariant类型允许传入更少确定的属性，且数据是只写的</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">interface Invariant &#123;  <span class="attr">property</span>: number | string &#125;</span><br><span class="line">interface Covariant &#123; +readOnly: number | string &#125;</span><br><span class="line">interface Contravariant &#123; +writeOnly: number | string &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> value1: Invariant = &#123; <span class="attr">property</span>: <span class="number">42</span> &#125;; <span class="comment">// Error!</span></span><br><span class="line"><span class="keyword">var</span> value2: Covariant = &#123; <span class="attr">readOnly</span>: <span class="number">42</span> &#125;; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">var</span> value3: Contravariant = &#123; <span class="attr">writeOnly</span>: <span class="number">42</span> &#125;; <span class="comment">// Error!</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">method1</span>(<span class="params">value: Invariant</span>) </span>&#123;</span><br><span class="line">  value.property;        <span class="comment">// Works!</span></span><br><span class="line">  value.property = <span class="number">3.14</span>; <span class="comment">// Works!</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">method2</span>(<span class="params">value: Covariant</span>) </span>&#123;</span><br><span class="line">  value.readOnly;        <span class="comment">// Works!</span></span><br><span class="line">  value.readOnly = <span class="number">3.14</span>; <span class="comment">// Error!</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">method3</span>(<span class="params">value: Contravariant</span>) </span>&#123;</span><br><span class="line">  value.writeOnly;        <span class="comment">// Error!</span></span><br><span class="line">  value.writeOnly = <span class="number">3.14</span>; <span class="comment">// Works!!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="泛型-Generic-Types"><a href="#泛型-Generic-Types" class="headerlink" title="泛型(Generic Types)"></a>泛型(Generic Types)</h3><p>泛型又称“多态类型”，是将类型抽象的一种方式。上面介绍其他类型的时候，有些地方已经提到和使用了泛型。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">identity</span>&lt;<span class="title">T</span>&gt;(<span class="params">value: T</span>): <span class="title">T</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个例子中，定义了一个方法，返回值的类型传入参数的类型一致。</p>
+<p>flow不会推导泛型，因此如果想要使用泛型，需要显式的声明，不然flow的推导结果可能会比你想象的要缺少多态性。</p>
+<p><a href="https://flow.org/try/#0GYVwdgxgLglg9mABDAJgUzLKBPAFANwEMAbENASkQG8AoRRAJzShAaSNLQG4aBfGmkQaJCALkQBnKAxhgA5ogC8ydJhg5cAcmyF5ARxgAvABa65m8j0GFhAI3FgQAW1tphy1Bix4AjACYAZksgA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">identity</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a: string = identity(<span class="string">'yangqizhang'</span>); <span class="comment">// Error!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b: number = identity(<span class="number">123</span>); <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<p>在这个示例中，flow会将<code>identity</code>函数的返回值推导成<code>string | number</code>，然后<code>a</code>和<code>b</code>的验证会抛出验证错误。将<code>identity</code>显式的声明成泛型，一切正常。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">identity</span>&lt;<span class="title">T</span>&gt;(<span class="params">value: T</span>): <span class="title">T</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a: string = identity(<span class="string">'yangqizhang'</span>); <span class="comment">// Works!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b: number = identity(<span class="number">123</span>); <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<h4 id="泛型的行为"><a href="#泛型的行为" class="headerlink" title="泛型的行为"></a>泛型的行为</h4><ol>
+<li><p>泛型的参数（T）就像是“变量”一样，可以在作用域任意地方的作为类型使用。</p>
+</li>
+<li><p>可以在泛型的参数列表中定义多个参数。</p>
+</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">identity</span>&lt;<span class="title">One</span>, <span class="title">Two</span>, <span class="title">Three</span>&gt;(<span class="params">one: One, two: Two, three: Three</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>flow会跟踪传入的值，保证泛型不会被设置成某个确定的类型。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">identity</span>&lt;<span class="title">T</span>&gt;(<span class="params">value: T</span>): <span class="title">T</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"foo"</span>; <span class="comment">// Error!</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">identity</span>&lt;<span class="title">T</span>&gt;(<span class="params">value: T</span>): <span class="title">T</span> </span>&#123;</span><br><span class="line">  value = <span class="string">"foo"</span>; <span class="comment">// Error!</span></span><br><span class="line">  <span class="keyword">return</span> value;  <span class="comment">// Error!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>在flow中，传入一个类型后经常会丢失原有的类型，例如将<code>&#39;john&#39;</code>作为参数传入<code>identity(value: string)</code>后，<code>value</code>会丢失原始的文字类型<code>&#39;john&#39;</code>。使用泛型则可以保证值的类型不会变化。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">identity</span>(<span class="params">value: string</span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a: <span class="string">'john'</span> = identity(<span class="string">'john'</span>); <span class="comment">// Error!</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">identityT</span>&lt;<span class="title">T</span>&gt;(<span class="params">value:T</span>):<span class="title">T</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b: <span class="string">'john'</span> = identityT(<span class="string">'john'</span>); <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>泛型的类型是未知的，但可以给泛型的参数声明类型来进行约束。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">logFoo</span>&lt;<span class="title">T</span>: </span>&#123; foo: string &#125;&gt;(obj: T): T &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(obj.foo); <span class="comment">// Works!</span></span><br><span class="line">  <span class="keyword">return</span> obj;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">logFoo(&#123; <span class="attr">foo</span>: <span class="string">'foo'</span>, <span class="attr">bar</span>: <span class="string">'bar'</span> &#125;);  <span class="comment">// Works!</span></span><br><span class="line">logFoo(&#123; <span class="attr">bar</span>: <span class="string">'bar'</span> &#125;); <span class="comment">// Error!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> log: &#123;<span class="attr">foo</span>: <span class="string">'1'</span>&#125; = logFoo(&#123;<span class="attr">foo</span>: <span class="string">'1'</span>&#125;); <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>经验证，如果给泛型的参数声明了类型会导致非基本类型数据失去原有的文字类型。所以上面例子中<code>var log: {foo: &#39;1&#39;} = logFoo({foo: &#39;1&#39;})</code>会抛出错误。</p>
+</blockquote>
+<ol start="6">
+<li>可以给泛型像函数一样传入参数来指定泛型参数的类型，还可以传入默认的类型。此特性仅对<code>Classes</code>，<code>Type</code>，<code>Interface</code>类型有用。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Item</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">  prop: T;</span><br><span class="line">  <span class="keyword">constructor</span>(param: T) &#123;</span><br><span class="line">    <span class="keyword">this</span>.prop = param;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> item1: Item&lt;number&gt; = <span class="keyword">new</span> Item(<span class="number">42</span>); <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">let</span> item2: Item&lt;string&gt; = <span class="keyword">new</span> Item(<span class="number">42</span>); <span class="comment">// Error!</span></span><br><span class="line"><span class="keyword">let</span> item3: Item = <span class="keyword">new</span> Item(<span class="number">42</span>); <span class="comment">// Error!</span></span><br><span class="line"></span><br><span class="line">type ItemDefault&lt;T: number = <span class="number">1</span>&gt; = &#123;</span><br><span class="line">  prop: T,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> foo: ItemDefault&lt;&gt; = &#123; <span class="attr">prop</span>: <span class="number">1</span> &#125;; <span class="comment">// Works!</span></span><br><span class="line"><span class="keyword">let</span> bar: ItemDefault&lt;<span class="number">2</span>&gt; = &#123; <span class="attr">prop</span>: <span class="number">2</span> &#125;; <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<h3 id="联合类型-Union-Types"><a href="#联合类型-Union-Types" class="headerlink" title="联合类型(Union Types)"></a>联合类型(Union Types)</h3><p>当希望一个类型拥有多个可选值时，联合类型就派上用场了。</p>
+<p>定义一个联合类型格式如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Type1 | Type2 | ... | TypeN</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>联合类型并不是指“并集”，而是取多个值的其中一个。</p>
+</blockquote>
+<h4 id="传入多类值，返回单类值"><a href="#传入多类值，返回单类值" class="headerlink" title="传入多类值，返回单类值"></a>传入多类值，返回单类值</h4><p>下面的例子中，函数接受类型为<code>number | boolean | string</code>的参数，并返回一个<code>string</code>类型的值，由于函数体中没有判断所有可能值，也没有返回一个默认值，所以函数可能返回<code>undefined</code>，这是开发过程中很常见，也是容易疏忽的隐式错误。flow通过检查发现可能返回的值与返回类型<code>string</code>不匹配，所以抛出了检查错误，帮我们规避这方面的问题。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">toStringPrimitives</span>(<span class="params">value: number | boolean | string</span>): <span class="title">string</span> </span>&#123; <span class="comment">// Error!</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> value === <span class="string">'number'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">String</span>(value);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> value === <span class="string">'boolean'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">String</span>(value);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="拆解联合"><a href="#拆解联合" class="headerlink" title="拆解联合"></a>拆解联合</h4><p>假设接口返回了这样的数据结构。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">type Response = &#123;</span><br><span class="line">  success: <span class="literal">true</span> | <span class="literal">false</span>,</span><br><span class="line">  value?: boolean,</span><br><span class="line">  error?: string,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果<code>success</code>为<code>true</code>，<code>value</code>有值<br>如果<code>success</code>为<code>false</code>，<code>error</code>有值</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handleResponse</span>(<span class="params">response: Response</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (response.success) &#123;</span><br><span class="line">    <span class="keyword">var</span> value: boolean = response.value; <span class="comment">// Error!</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> error: string = response.error; <span class="comment">// Error!</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为<code>value</code>和<code>error</code>是可选参数，所以验证都失败了，但是我们设想的却不应该是这样。于是我们转变思路，由于将<code>Response</code>拆解联合。</p>
+<p>拆解联合的必要条件是每种类型可以通过一个公共的属性加以区分。显然<code>Response</code>满足这个条件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">type Success = &#123; <span class="attr">success</span>: <span class="literal">true</span>, <span class="attr">value</span>: boolean &#125;;</span><br><span class="line">type Failed  = &#123; <span class="attr">success</span>: <span class="literal">false</span>, <span class="attr">error</span>: string &#125;;</span><br><span class="line"></span><br><span class="line">type Response = Success | Failed;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handleResponse</span>(<span class="params">response: Response</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (response.success) &#123;</span><br><span class="line">    <span class="keyword">var</span> value: boolean = response.value; <span class="comment">// Works!</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> error: string = response.error; <span class="comment">// Works!</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当<code>response.success</code>为<code>true</code>时，flow会自动将<code>response</code>选择成<code>Success</code>，然后一切正常。</p>
+<h4 id="严格拆解联合"><a href="#严格拆解联合" class="headerlink" title="严格拆解联合"></a>严格拆解联合</h4><p>那如果没有一个公共属性可以加以区分呢？看看另一个情况，如果接口返回的是这样的结构</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">type Response = &#123;</span><br><span class="line">  success?: <span class="literal">true</span>,</span><br><span class="line">  error?: <span class="literal">true</span>,</span><br><span class="line">  value?: boolean,</span><br><span class="line">  message?: string,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>按上面的方式拆解</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">type Success = &#123; <span class="attr">success</span>: <span class="literal">true</span>, <span class="attr">value</span>: boolean &#125;;</span><br><span class="line">type Failed  = &#123; <span class="attr">error</span>: <span class="literal">true</span>, <span class="attr">message</span>: string &#125;;</span><br><span class="line"></span><br><span class="line">type Response = Success | Failed;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handleResponse</span>(<span class="params">response: Response</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (response.success) &#123;</span><br><span class="line">    <span class="keyword">var</span> value: boolean = response.value; <span class="comment">// Error!</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于传入额外的属性<code>{error: true, message: string, success:true}</code>对于<code>Failed</code>规则也是匹配的，在函数体中的判断通过后，<code>response.error</code>会是<code>undefined</code>，flow认为这种情况是会有隐式错误的，所以抛出了错误。</p>
+<p>别忘了之前提到过<a href="#yan-ge-pi-pei-type">严格匹配</a>，这里使用它可以解决上面的问题。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">type Success = &#123;| success: <span class="literal">true</span>, <span class="attr">value</span>: boolean |&#125;;</span><br><span class="line">type Failed  = &#123;| error: <span class="literal">true</span>, <span class="attr">message</span>: string |&#125;;</span><br><span class="line"></span><br><span class="line">type Response = Success | Failed;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handleResponse</span>(<span class="params">response: Response</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (response.success) &#123;</span><br><span class="line">    <span class="keyword">var</span> value: boolean = response.value;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> message: string = response.message;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="交叉类型-Intersections-Type"><a href="#交叉类型-Intersections-Type" class="headerlink" title="交叉类型(Intersections Type)"></a>交叉类型(Intersections Type)</h3><p>交叉类型会将多个类型合并成为一个类型，类似于集合的“并集”操作。语法上使用<code>&amp;</code>将多个类型连接。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Type1 &amp; Type2 &amp; Type3</span><br></pre></td></tr></table></figure>
+<p>比如</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">type A = &#123; <span class="attr">a</span>: number &#125;</span><br><span class="line">type B = &#123; <span class="attr">b</span>: number &#125;</span><br><span class="line"></span><br><span class="line">type AB = A &amp; B</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a: AB = &#123; <span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: <span class="number">1</span> &#125;; <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<p>如果合并的类型有相同的属性，这个属性的类型同样会进行交叉操作，但是这里有一点有点和预期不同。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">type A = &#123; <span class="attr">props</span>: &#123; <span class="attr">a</span>: number &#125; &#125;</span><br><span class="line">type B = &#123; <span class="attr">props</span>: &#123; <span class="attr">b</span>: number &#125; &#125;</span><br><span class="line"></span><br><span class="line">type AB = A &amp; B</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a: AB = &#123; <span class="attr">props</span>: &#123; <span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: <span class="number">1</span> &#125; &#125;; <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line">type A = &#123; <span class="attr">props</span>: &#123; <span class="attr">a</span>: number, <span class="attr">b</span>: number &#125; &#125;</span><br><span class="line">type B = &#123; <span class="attr">props</span>: &#123; <span class="attr">b</span>: number &#125; &#125;</span><br><span class="line"></span><br><span class="line">type AB = A &amp; B</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a: AB = &#123; <span class="attr">props</span>: &#123; <span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: <span class="number">1</span> &#125; &#125;; <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<p>flow文档上并没有对这种情况作说明，文档上说会进行交叉，但实际情况相同属性必须<code>B</code>中的属性是<code>A</code>的子类型才能正常交叉，针对这个问题已经提交<a href="https://github.com/facebook/flow/issues/6992" target="_blank" rel="noopener">issue</a>。</p>
+<h3 id="typeof类型"><a href="#typeof类型" class="headerlink" title="typeof类型"></a>typeof类型</h3><p><code>typeof</code>在javascript中用于获取一个值的类型，在flow中<code>typeof</code>也是用于获取类型，不过获取的是flow的声明类型。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"><span class="keyword">let</span> num1 = <span class="number">42</span>;</span><br><span class="line"><span class="keyword">let</span> num2: <span class="keyword">typeof</span> num1 = <span class="number">3.14</span>;    <span class="comment">// Works!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> bool1 = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">let</span> bool2: <span class="keyword">typeof</span> bool1 = <span class="literal">false</span>; <span class="comment">// Works!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> str1 = <span class="string">'hello'</span>;</span><br><span class="line"><span class="keyword">let</span> str2: <span class="keyword">typeof</span> str1 = <span class="string">'world'</span>; <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<p>值得注意的是，如果对文字没有显式声明类型，flow会将其推导成基本类型，所以<code>typeof</code>得出的也是基本类型。但是如果对文字显式声明了文字类型，<code>typeof</code>就会得到显式声明的类型。</p>
+<p><a href="https://flow.org/try/#0DYUwLgBAdgrgtgRgFwQCwCYIF43oNwBQoksc6KYAngA4gD2AZtPAthAMwB0CqeE-EAPSCIAUQBO4uuICEBIuAgAjOnWDIIYcTBBstOwsWWrg5TTXpMVa1jgYBDYAGcQfYWMnS5CyE60aAcgALEGBgOgC2YNDwgMNFP3EzKlpGCETbCACAd2lgABM4oREJKVkgA" target="_blank" rel="noopener">示例：</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"><span class="keyword">let</span> num1: <span class="number">42</span> = <span class="number">42</span>;</span><br><span class="line"><span class="keyword">let</span> num2: <span class="keyword">typeof</span> num1 = <span class="number">3.14</span>;    <span class="comment">// Error!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> bool1: <span class="literal">true</span> = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">let</span> bool2: <span class="keyword">typeof</span> bool1 = <span class="literal">false</span>; <span class="comment">// Error!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> str1: <span class="string">'hello'</span> = <span class="string">'hello'</span>;</span><br><span class="line"><span class="keyword">let</span> str2: <span class="keyword">typeof</span> str1 = <span class="string">'world'</span>; <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<h3 id="类型转换-Type-Cast"><a href="#类型转换-Type-Cast" class="headerlink" title="类型转换(Type Cast)"></a>类型转换(Type Cast)</h3><h4 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h4><p><code>(value: Type)</code></p>
+<blockquote>
+<p>这种格式并不会转变原数据类型，返回值才会是转换后的类型</p>
+</blockquote>
+<h4 id="类型断言"><a href="#类型断言" class="headerlink" title="类型断言"></a>类型断言</h4><p>类型转换的一个重要作用就是断言类型是否是想要的类型。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"><span class="keyword">let</span> value = <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line">(value: <span class="number">42</span>);     <span class="comment">// Works!</span></span><br><span class="line">(value: number); <span class="comment">// Works!</span></span><br><span class="line">(value: string); <span class="comment">// Error!</span></span><br></pre></td></tr></table></figure>
+<h4 id="转换"><a href="#转换" class="headerlink" title="转换"></a>转换</h4><p>如果对一个变量进行了类型转换，它就会变成转换后的类型。下面的例子中，<code>value</code>并未显式指定类型，因此它在上下文中的类型既能为<code>42</code>，也能是<code>number</code>。当后续将它的类型转换成<code>number</code>后，它的类型变不再可以为<code>42</code>了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"><span class="keyword">let</span> value = <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line">(value: <span class="number">42</span>);     <span class="comment">// Works!</span></span><br><span class="line">(value: number); <span class="comment">// Works!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> newValue = (value: number);</span><br><span class="line"></span><br><span class="line">(newValue: <span class="number">42</span>);     <span class="comment">// Error!</span></span><br><span class="line">(newValue: number); <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<h4 id="通过any转换类型"><a href="#通过any转换类型" class="headerlink" title="通过any转换类型"></a>通过any转换类型</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> value = <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line">(value: number); <span class="comment">// Works!</span></span><br><span class="line"><span class="comment">// $ExpectError</span></span><br><span class="line">(value: string); <span class="comment">// Error!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> newValue = ((value: any): string);</span><br><span class="line"></span><br><span class="line">(newValue: number); <span class="comment">// Error!</span></span><br><span class="line">(newValue: string); <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<p>我们尝试将<code>value</code>的类型转换成<code>string</code>，显然会抛出错误。但是如果先将其转换成<code>any</code>，那么它就可以转换成其他任何类型了。</p>
+<p>这种做法显然是不安全的，也不推荐这样做。但是在有些情况下，如果能确定结果的类型，但是flow难以识别类型，可以使用any做一次中转。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">cloneObject</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> clone = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">Object</span>.keys(obj).forEach(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">    clone[key] = obj[key];</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> ((clone: any): <span class="keyword">typeof</span> obj);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> clone = cloneObject(&#123;</span><br><span class="line">  foo: <span class="number">1</span>,</span><br><span class="line">  bar: <span class="literal">true</span>,</span><br><span class="line">  baz: <span class="string">'three'</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">(clone.foo: <span class="number">1</span>);       <span class="comment">// Works!</span></span><br><span class="line">(clone.bar: <span class="literal">true</span>);    <span class="comment">// Works!</span></span><br><span class="line">(clone.baz: <span class="string">'three'</span>); <span class="comment">// Works!</span></span><br></pre></td></tr></table></figure>
+<p>上面例子中，<code>flow</code>只能将<code>clone</code>识别成空对象，如果直接返回，后面的断言操作全会抛出异常。但是使用<code>any</code>将数据类型做一次转换后，可以将其转换成和<code>obj</code>参数一样的类型。因为从代码层面可以确定返回值的类型和传入的值是一致的。</p>
+<h3 id="模块类型"><a href="#模块类型" class="headerlink" title="模块类型"></a>模块类型</h3><p>类似于<code>esmodule</code>，flow的类型可以作为模块导入导出。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Foo</span> </span>&#123;&#125;;</span><br><span class="line"><span class="keyword">export</span> type MyObject = &#123; <span class="comment">/* ... */</span> &#125;;</span><br><span class="line"><span class="keyword">export</span> interface MyInterface &#123; <span class="comment">/* ... */</span> &#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> type Foo, &#123;MyObject, MyInterface&#125; <span class="keyword">from</span> <span class="string">'./exports'</span>;</span><br></pre></td></tr></table></figure>
+<p>此外，flow支持使用<code>typeof</code>导入模块的类型。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> myNumber = <span class="number">42</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> myNumber;</span><br><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">typeof</span> myNumber <span class="keyword">from</span> <span class="string">'./exports'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">typeof</span> &#123;MyClass&#125; <span class="keyword">from</span> <span class="string">'./exports'</span>;</span><br></pre></td></tr></table></figure>
+<p>以上介绍了大部分flow的类型，由于<code>工具类型(Utility Types)</code>内容比较多，所以后面会单独来介绍。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>参考文档：</p>
+<ul>
+<li><a href="https://flow.org" target="_blank" rel="noopener">Flow, a new static type checker for JavaScript</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/25/li-bo-lan-biao-shi-fa-jian-jie/" rel="next" title="逆波兰表示法简介">
+                <i class="fa fa-chevron-left"></i> 逆波兰表示法简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="杨骐彰" />
+            
+              <p class="site-author-name" itemprop="name">杨骐彰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yqz0203" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yqz0203@hotmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是静态检查"><span class="nav-number">1.</span> <span class="nav-text">什么是静态检查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化Flow"><span class="nav-number">2.</span> <span class="nav-text">初始化Flow</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">2.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加编辑器支持-For-vscode"><span class="nav-number">2.2.</span> <span class="nav-text">添加编辑器支持(For vscode)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类型声明"><span class="nav-number">3.</span> <span class="nav-text">类型声明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本类型"><span class="nav-number">3.1.</span> <span class="nav-text">基本类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可选类型"><span class="nav-number">3.2.</span> <span class="nav-text">可选类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文字类型"><span class="nav-number">3.3.</span> <span class="nav-text">文字类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#混合类型（mixed）"><span class="nav-number">3.4.</span> <span class="nav-text">混合类型（mixed）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任意类型（any）"><span class="nav-number">3.5.</span> <span class="nav-text">任意类型（any）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量类型"><span class="nav-number">3.6.</span> <span class="nav-text">变量类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数类型-Function-Types"><span class="nav-number">3.7.</span> <span class="nav-text">函数类型(Function Types)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对函数进行声明"><span class="nav-number">3.7.1.</span> <span class="nav-text">对函数进行声明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#声明函数类型"><span class="nav-number">3.7.2.</span> <span class="nav-text">声明函数类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数的this"><span class="nav-number">3.7.3.</span> <span class="nav-text">函数的this</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#断言函数"><span class="nav-number">3.7.4.</span> <span class="nav-text">断言函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Function类型"><span class="nav-number">3.7.5.</span> <span class="nav-text">Function类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Object类型"><span class="nav-number">3.8.</span> <span class="nav-text">Object类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对象声明语法"><span class="nav-number">3.8.1.</span> <span class="nav-text">对象声明语法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对象类型推导"><span class="nav-number">3.8.2.</span> <span class="nav-text">对象类型推导</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#封闭对象"><span class="nav-number">3.8.2.1.</span> <span class="nav-text">封闭对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#开放对象"><span class="nav-number">3.8.2.2.</span> <span class="nav-text">开放对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#严格匹配类型"><span class="nav-number">3.8.2.3.</span> <span class="nav-text">严格匹配类型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#对象映射"><span class="nav-number">3.8.2.4.</span> <span class="nav-text">对象映射</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Object类型-1"><span class="nav-number">3.8.2.5.</span> <span class="nav-text">Object类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组类型"><span class="nav-number">3.9.</span> <span class="nav-text">数组类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#声明数组"><span class="nav-number">3.9.1.</span> <span class="nav-text">声明数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不安全访问"><span class="nav-number">3.9.2.</span> <span class="nav-text">不安全访问</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#只读数组"><span class="nav-number">3.9.2.1.</span> <span class="nav-text">只读数组</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#元祖类型-Tuple-Types"><span class="nav-number">3.10.</span> <span class="nav-text">元祖类型(Tuple Types)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类类型-Class-Types"><span class="nav-number">3.11.</span> <span class="nav-text">类类型(Class Types)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#类方法"><span class="nav-number">3.11.1.</span> <span class="nav-text">类方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类属性"><span class="nav-number">3.11.2.</span> <span class="nav-text">类属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类泛型"><span class="nav-number">3.11.3.</span> <span class="nav-text">类泛型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#标称和结构"><span class="nav-number">3.11.4.</span> <span class="nav-text">标称和结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型别名-Type-Aliases"><span class="nav-number">3.12.</span> <span class="nav-text">类型别名(Type Aliases)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#语法"><span class="nav-number">3.12.1.</span> <span class="nav-text">语法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口类型-Interface-Types"><span class="nav-number">3.13.</span> <span class="nav-text">接口类型(Interface Types)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Interface语法"><span class="nav-number">3.13.1.</span> <span class="nav-text">Interface语法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不可变数据"><span class="nav-number">3.13.2.</span> <span class="nav-text">不可变数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型-Generic-Types"><span class="nav-number">3.14.</span> <span class="nav-text">泛型(Generic Types)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#泛型的行为"><span class="nav-number">3.14.1.</span> <span class="nav-text">泛型的行为</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#联合类型-Union-Types"><span class="nav-number">3.15.</span> <span class="nav-text">联合类型(Union Types)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#传入多类值，返回单类值"><span class="nav-number">3.15.1.</span> <span class="nav-text">传入多类值，返回单类值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拆解联合"><span class="nav-number">3.15.2.</span> <span class="nav-text">拆解联合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#严格拆解联合"><span class="nav-number">3.15.3.</span> <span class="nav-text">严格拆解联合</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉类型-Intersections-Type"><span class="nav-number">3.16.</span> <span class="nav-text">交叉类型(Intersections Type)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#typeof类型"><span class="nav-number">3.17.</span> <span class="nav-text">typeof类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型转换-Type-Cast"><span class="nav-number">3.18.</span> <span class="nav-text">类型转换(Type Cast)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#语法-1"><span class="nav-number">3.18.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类型断言"><span class="nav-number">3.18.2.</span> <span class="nav-text">类型断言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#转换"><span class="nav-number">3.18.3.</span> <span class="nav-text">转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通过any转换类型"><span class="nav-number">3.18.4.</span> <span class="nav-text">通过any转换类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块类型"><span class="nav-number">3.19.</span> <span class="nav-text">模块类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">4.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杨骐彰</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://QiZhang.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/10/09/add-js-type-check-flow/';
+          this.page.identifier = '2018/10/09/add-js-type-check-flow/';
+          this.page.title = '给JS添加静态类型检查-flowtype';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://QiZhang.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
