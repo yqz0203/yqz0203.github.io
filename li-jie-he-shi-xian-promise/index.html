@@ -83,7 +83,7 @@
 <meta name="keywords" content="promise,es6">
 <meta property="og:type" content="article">
 <meta property="og:title" content="理解和实现Promise">
-<meta property="og:url" content="http://yoursite.com/2018/09/10/li-jie-he-shi-xian-promise/index.html">
+<meta property="og:url" content="http://yoursite.com/li-jie-he-shi-xian-promise/index.html">
 <meta property="og:site_name" content="QiZhang&#39;s Blog">
 <meta property="og:description" content="Promise的横空出世成功解决了困扰前端开发多年的“回调地狱”的问题，由社区提出并发展后，成功“转正”写入了ES6的语法标准中。虽然时刻在用，但是总感觉自己对它是既熟悉又陌生。于是自己怀着“为什么要这么写”和“这是如何实现的”的疑惑，研究了Promise的规范和尝试了自己实现，同时在此做一个笔记。">
 <meta property="og:locale" content="zh-Hans">
@@ -120,7 +120,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/09/10/li-jie-he-shi-xian-promise/"/>
+  <link rel="canonical" href="http://yoursite.com/li-jie-he-shi-xian-promise/"/>
 
 
 
@@ -161,7 +161,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle">Life just like code</p>
+        <h1 class="site-subtitle" itemprop="description">Life just like code</h1>
       
   </div>
 
@@ -253,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/10/li-jie-he-shi-xian-promise/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/li-jie-he-shi-xian-promise/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="杨骐彰">
@@ -270,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">理解和实现Promise</h1>
+          <h2 class="post-title" itemprop="name headline">理解和实现Promise</h2>
         
 
         <div class="post-meta">
@@ -323,9 +323,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/09/10/li-jie-he-shi-xian-promise/#comments" itemprop="discussionUrl">
+                <a href="/li-jie-he-shi-xian-promise/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/09/10/li-jie-he-shi-xian-promise/" itemprop="commentCount"></span>
+                        data-disqus-identifier="li-jie-he-shi-xian-promise/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -490,7 +490,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/08/29/hello-hexo/" rel="next" title="你好，hexo">
+              <a href="/hello-hexo/" rel="next" title="你好，hexo">
                 <i class="fa fa-chevron-left"></i> 你好，hexo
               </a>
             
@@ -500,7 +500,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/09/25/li-bo-lan-biao-shi-fa-jian-jie/" rel="prev" title="逆波兰表示法简介">
+              <a href="/li-bo-lan-biao-shi-fa-jian-jie/" rel="prev" title="逆波兰表示法简介">
                 逆波兰表示法简介 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -753,6 +753,9 @@
 
 
 
+  
+  
+
 
 
 
@@ -787,6 +790,16 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
   
 
 
@@ -834,8 +847,8 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2018/09/10/li-jie-he-shi-xian-promise/';
-          this.page.identifier = '2018/09/10/li-jie-he-shi-xian-promise/';
+          this.page.url = 'http://yoursite.com/li-jie-he-shi-xian-promise/';
+          this.page.identifier = 'li-jie-he-shi-xian-promise/';
           this.page.title = '理解和实现Promise';
         };
         var d = document, s = d.createElement('script');

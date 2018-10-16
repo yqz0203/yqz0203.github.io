@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="flowtype,flow,静态检查,给JS添加静态类型检查-flowtype" />
+  <meta name="keywords" content="flowtype, flow, 静态检查" />
 
 
 
@@ -80,15 +80,15 @@
 
 
 <meta name="description" content="flow是FB推出的代码静态检查工具，目的是让javascript开发者能“更快”，“更好”，“更有信心”地编写代码。在它出现之前，想要做JS的静态检查只能使用typescript，但是typescript相对javascript而言由于加入了很多新的语言特性，学习成本较高，而且对于旧项目基本上需要重写代码，在一定程度上增加了使用难度。当然两者各有优劣，使用两者之中的哪一个更多取决于团队的配置和">
-<meta name="keywords" content="flowtype,flow,静态检查,给JS添加静态类型检查-flowtype">
+<meta name="keywords" content="flowtype, flow, 静态检查">
 <meta property="og:type" content="article">
 <meta property="og:title" content="给JS添加静态类型检查-flowtype">
-<meta property="og:url" content="http://yoursite.com/2018/10/09/add-js-type-check-flow/index.html">
+<meta property="og:url" content="http://yoursite.com/add-js-type-check-flow/index.html">
 <meta property="og:site_name" content="QiZhang&#39;s Blog">
 <meta property="og:description" content="flow是FB推出的代码静态检查工具，目的是让javascript开发者能“更快”，“更好”，“更有信心”地编写代码。在它出现之前，想要做JS的静态检查只能使用typescript，但是typescript相对javascript而言由于加入了很多新的语言特性，学习成本较高，而且对于旧项目基本上需要重写代码，在一定程度上增加了使用难度。当然两者各有优劣，使用两者之中的哪一个更多取决于团队的配置和">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/flow-typed-logo.png">
-<meta property="og:updated_time" content="2018-10-16T07:15:05.158Z">
+<meta property="og:updated_time" content="2018-10-16T08:04:41.747Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="给JS添加静态类型检查-flowtype">
 <meta name="twitter:description" content="flow是FB推出的代码静态检查工具，目的是让javascript开发者能“更快”，“更好”，“更有信心”地编写代码。在它出现之前，想要做JS的静态检查只能使用typescript，但是typescript相对javascript而言由于加入了很多新的语言特性，学习成本较高，而且对于旧项目基本上需要重写代码，在一定程度上增加了使用难度。当然两者各有优劣，使用两者之中的哪一个更多取决于团队的配置和">
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/10/09/add-js-type-check-flow/"/>
+  <link rel="canonical" href="http://yoursite.com/add-js-type-check-flow/"/>
 
 
 
@@ -163,7 +163,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle">Life just like code</p>
+        <h1 class="site-subtitle" itemprop="description">Life just like code</h1>
       
   </div>
 
@@ -255,7 +255,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/add-js-type-check-flow/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/add-js-type-check-flow/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="杨骐彰">
@@ -272,7 +272,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">给JS添加静态类型检查-flowtype</h1>
+          <h2 class="post-title" itemprop="name headline">给JS添加静态类型检查-flowtype</h2>
         
 
         <div class="post-meta">
@@ -325,9 +325,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/10/09/add-js-type-check-flow/#comments" itemprop="discussionUrl">
+                <a href="/add-js-type-check-flow/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/10/09/add-js-type-check-flow/" itemprop="commentCount"></span>
+                        data-disqus-identifier="add-js-type-check-flow/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -667,7 +667,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/25/li-bo-lan-biao-shi-fa-jian-jie/" rel="next" title="逆波兰表示法简介">
+              <a href="/li-bo-lan-biao-shi-fa-jian-jie/" rel="next" title="逆波兰表示法简介">
                 <i class="fa fa-chevron-left"></i> 逆波兰表示法简介
               </a>
             
@@ -926,6 +926,9 @@
 
 
 
+  
+  
+
 
 
 
@@ -960,6 +963,16 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
   
 
 
@@ -1007,8 +1020,8 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2018/10/09/add-js-type-check-flow/';
-          this.page.identifier = '2018/10/09/add-js-type-check-flow/';
+          this.page.url = 'http://yoursite.com/add-js-type-check-flow/';
+          this.page.identifier = 'add-js-type-check-flow/';
           this.page.title = '给JS添加静态类型检查-flowtype';
         };
         var d = document, s = d.createElement('script');
