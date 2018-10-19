@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="因为flow的类型本身是固定的，如果想要对类型进行转换和操作，就得借助于工具类型（Utility Types），有了它们，我们可以更加灵活地使用flow。现在就让我们来认识一下这些工具类型吧。">
+<meta name="description" content="因为flow的类型本身是固定的，如果想要对类型进行转换和操作，就得借助于工具类型（Utility Types），有了它们，我们可以更加灵活地使用flow。">
 <meta name="keywords" content="flowtype, flow, 静态检查">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用flow的工具类型">
 <meta property="og:url" content="http://yoursite.com/user-flow-unility-type/index.html">
 <meta property="og:site_name" content="QiZhang&#39;s Blog">
-<meta property="og:description" content="因为flow的类型本身是固定的，如果想要对类型进行转换和操作，就得借助于工具类型（Utility Types），有了它们，我们可以更加灵活地使用flow。现在就让我们来认识一下这些工具类型吧。">
+<meta property="og:description" content="因为flow的类型本身是固定的，如果想要对类型进行转换和操作，就得借助于工具类型（Utility Types），有了它们，我们可以更加灵活地使用flow。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-19T03:35:53.149Z">
+<meta property="og:updated_time" content="2018-10-19T03:49:15.209Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用flow的工具类型">
-<meta name="twitter:description" content="因为flow的类型本身是固定的，如果想要对类型进行转换和操作，就得借助于工具类型（Utility Types），有了它们，我们可以更加灵活地使用flow。现在就让我们来认识一下这些工具类型吧。">
+<meta name="twitter:description" content="因为flow的类型本身是固定的，如果想要对类型进行转换和操作，就得借助于工具类型（Utility Types），有了它们，我们可以更加灵活地使用flow。">
 
 
 
@@ -362,7 +362,7 @@
       
 
       
-        <p>因为flow的类型本身是固定的，如果想要对类型进行转换和操作，就得借助于工具类型（Utility Types），有了它们，我们可以更加灵活地使用flow。现在就让我们来认识一下这些工具类型吧。</p>
+        <p>因为flow的类型本身是固定的，如果想要对类型进行转换和操作，就得借助于工具类型（Utility Types），有了它们，我们可以更加灵活地使用flow。</p>
 <a id="more"></a>
 <h2 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h2><h3 id="Keys"><a href="#Keys" class="headerlink" title="$Keys"></a>$Keys<t></t></h3><p><code>$Keys</code>顾名思义，是用于获取一个类型的键值，类似与<code>Object.keys</code>。注意<code>$Keys&lt;T&gt;</code>返回的是一个联合类型（Union Type），而不是数组。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> gender = &#123;</span><br><span class="line">  man: <span class="number">1</span>,</span><br><span class="line">  woman: <span class="number">0</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doGender</span>(<span class="params">genderStr: <span class="string">'man'</span> | <span class="string">'woman'</span></span>)</span>&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -434,7 +434,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @flow</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DataStore</span> </span>&#123;</span><br><span class="line">  data: *; <span class="comment">// If this property weren't defined, you'd get an error just trying to assign `data`</span></span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">this</span>.data = &#123;</span><br><span class="line">      name: <span class="string">'DataStore'</span>,</span><br><span class="line">      isOffline: <span class="literal">true</span></span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  goOnline() &#123;</span><br><span class="line">    <span class="keyword">this</span>.data.isOffline = <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  changeName() &#123;</span><br><span class="line">    <span class="keyword">this</span>.data.isOffline = <span class="string">'SomeStore'</span>; <span class="comment">// oops, wrong key!</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>记住<code>*</code>并不是总能推导出类型，如果上下文无法推断，那么<code>*</code>就和<code>any</code>无异。</p>
 <h3 id="Subtype-和-Supertype"><a href="#Subtype-和-Supertype" class="headerlink" title="$Subtype 和 $Supertype"></a>$Subtype<t> 和 $Supertype<t></t></t></h3><p>虽然在官方文档中显示为<code>Work in Progress</code>，其实这两个工具在很多模块已经在使用了。</p>
-<p>在弄清<code>Subtype</code>和<code>Supertype</code>的概念之前，先把这个放一放吧，我们后续介绍它们时再</p>
+<p>在弄清<code>Subtype</code>和<code>Supertype</code>的概念之前，先把它俩搁置一下吧。</p>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>参考文档：</p>
 <ul>
 <li><a href="https://flow.org/en/docs/types/utilities" target="_blank" rel="noopener">flow官方文档</a></li>
