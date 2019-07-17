@@ -88,7 +88,7 @@
 <meta property="og:description" content="稍微接触前端比较久的同学，多多少少都听说过一个经典问题 0.1 + 0.2 !== 0.3，即计算精度丢失。其实不光 javascript，其他很多语言都有这个问题。造成这个问题的原因，还要从一些计算机知识开始说起。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images//general_floating_point_frac.png">
-<meta property="og:updated_time" content="2019-07-17T10:12:16.609Z">
+<meta property="og:updated_time" content="2019-07-17T10:15:34.307Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解javascript的数值精度">
 <meta name="twitter:description" content="稍微接触前端比较久的同学，多多少少都听说过一个经典问题 0.1 + 0.2 !== 0.3，即计算精度丢失。其实不光 javascript，其他很多语言都有这个问题。造成这个问题的原因，还要从一些计算机知识开始说起。">
@@ -309,7 +309,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-07-17T18:12:16+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2019-07-17T18:15:34+08:00">
                 2019-07-17
               </time>
             
@@ -391,32 +391,7 @@
 <p>存储的三个域如下图：</p>
 <p><img src="/images//general_floating_point_frac.png" alt=""></p>
 <p>双精度 64 位浮点数使用 64 位存储，包括 1 位符号位，11 位指数值，以及 52 位小数值。由于指数可以为负数，为了方便存储，指数部分使用<code>偏正值（exponent basis）</code>进行表示，即加入一个固定的偏移量，使指数值永远为正数，然后计算时减去固定的偏移量，得出实际的指数。因为有符号 11 位二进制的最小值为<code>-1023</code>，所以 64 位双精度的偏移值为<code>1023</code>，而 11 位二进制的正整数区间为<code>0~2047</code>，除去 2 个特殊值 0 和 2047，得出指数部分的区间为<code>-1022~+2013</code>。</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>11</td>
-<td>52 位长</td>
-</tr>
-<tr>
-<td>S</td>
-<td>Exp</td>
-<td>Fraction</td>
-</tr>
-<tr>
-<td>63</td>
-<td>62 至 52 偏正值(实际指数大小+1023)</td>
-<td>51 至 0 位编号（从右边开始为 0）</td>
-</tr>
-</tbody>
-</table>
+<p>| — | ———————————- | ——————————– |<br>| 1   | 11                                 | 52 位长                          |<br>| S   | Exp                                | Fraction                         |<br>| 63  | 62 至 52 偏正值(实际指数大小+1023) | 51 至 0 位编号（从右边开始为 0） |</p>
 <h3 id="规约数和非规约数"><a href="#规约数和非规约数" class="headerlink" title="规约数和非规约数"></a>规约数和非规约数</h3><p>上面提到了 2 个特殊的指数域 0 和 2047，一个二进制全为 0，一个二进制全为 1。</p>
 <ul>
 <li>当指数域为 0，分数部分也为 0，则代表 0。</li>
