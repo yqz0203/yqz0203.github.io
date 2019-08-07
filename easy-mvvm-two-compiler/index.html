@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="QiZhang&#39;s Blog">
 <meta property="og:description" content="上一篇我们已经可以捕获数据的更改，下面为了让将数据的更改与页面绑定，需要通过Compiler解析模板。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-07T10:16:36.021Z">
+<meta property="og:updated_time" content="2019-08-07T10:17:26.099Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="简单易懂的MVVM实现之Compiler（二）">
 <meta name="twitter:description" content="上一篇我们已经可以捕获数据的更改，下面为了让将数据的更改与页面绑定，需要通过Compiler解析模板。">
@@ -307,7 +307,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-08-07T18:16:36+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2019-08-07T18:17:26+08:00">
                 2019-08-07
               </time>
             
@@ -389,7 +389,7 @@
 <p><code>\{\{ user ? user.name : &#39;&#39;\}\}</code>，<code>\{\{ user &amp;&amp; user.name \}\}</code>。</p>
 <p>可以将括号中的表达式理解成赋值表达式的右侧部分，所以下面这种不支持。</p>
 <p><code>\{\{ var name = user ? user.name : &#39;&#39;; return name\}\}</code></p>
-<h3 id="DOM-属性"><a href="#DOM-属性" class="headerlink" title="DOM 属性"></a>DOM 属性</h3><p>有时候我们需要操作 dom 节点的一些内置属性，例如按钮<code>button</code>组件有内置的<code>disable</code>属性。</p>
+<h3 id="DOM-属性"><a href="#DOM-属性" class="headerlink" title="DOM 属性"></a>DOM 属性</h3><p>有时候我们需要操作 dom 节点的一些内置属性，例如按钮<code>button</code>组件有内置的<code>disabled</code>属性。</p>
 <p>如果我们在属性上通过模板语法</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">disabled</span>=<span class="string">"&#123;&#123;submiting?true:false&#125;&#125;"</span>&gt;</span>提交<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>会发现这个按钮始终处于禁用状态。因为 html 上属性值是字符串且默认是为<code>true</code>的，所以只要在 html 上定义了<code>disabled</code>，内置的<code>disabled</code>属性始终都不会为<code>false</code>。所以想要真正的控制内置属性，只能通过<code>button.disabled = false</code>来实现。</p>
