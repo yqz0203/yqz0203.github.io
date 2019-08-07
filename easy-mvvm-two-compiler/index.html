@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="QiZhang&#39;s Blog">
 <meta property="og:description" content="上一篇我们已经可以捕获数据的更改，下面为了让将数据的更改与页面绑定，需要通过Compiler解析模板。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-07T10:06:19.321Z">
+<meta property="og:updated_time" content="2019-08-07T10:16:36.021Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="简单易懂的MVVM实现之Compiler（二）">
 <meta name="twitter:description" content="上一篇我们已经可以捕获数据的更改，下面为了让将数据的更改与页面绑定，需要通过Compiler解析模板。">
@@ -307,7 +307,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-08-07T18:06:19+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2019-08-07T18:16:36+08:00">
                 2019-08-07
               </time>
             
@@ -391,7 +391,7 @@
 <p><code>\{\{ var name = user ? user.name : &#39;&#39;; return name\}\}</code></p>
 <h3 id="DOM-属性"><a href="#DOM-属性" class="headerlink" title="DOM 属性"></a>DOM 属性</h3><p>有时候我们需要操作 dom 节点的一些内置属性，例如按钮<code>button</code>组件有内置的<code>disable</code>属性。</p>
 <p>如果我们在属性上通过模板语法</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">disabled</span>=<span class="string">"\&#123;\&#123;submiting?true:false\&#125;\&#125;"</span>&gt;</span>提交<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">disabled</span>=<span class="string">"&#123;&#123;submiting?true:false&#125;&#125;"</span>&gt;</span>提交<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>会发现这个按钮始终处于禁用状态。因为 html 上属性值是字符串且默认是为<code>true</code>的，所以只要在 html 上定义了<code>disabled</code>，内置的<code>disabled</code>属性始终都不会为<code>false</code>。所以想要真正的控制内置属性，只能通过<code>button.disabled = false</code>来实现。</p>
 <p>简单的通过表达式模板来控制有些属性是不行的，所以我们需要定义额外的规则来实现。</p>
 <h4 id="属性语法"><a href="#属性语法" class="headerlink" title="属性语法"></a>属性语法</h4><p>我们在属性前加入一个<code>:</code>号来表示这个属性是绑定在节点的 dom 属性中，而不是绑定 html 模板的属性中。具体区别在于，在<code>submiting</code>属性触发更改后，会通过<code>button.disabled = false</code>而不是<code>button.setAttribute(&#39;disabled&#39;, false)</code>来更改属性。</p>
