@@ -88,7 +88,7 @@
 <meta property="og:description" content="MVVM 大家都不陌生了，它把前端开发者用复杂的 dom 操作中彻底解放了出来，从当年让人惊为天人的 Angularjs，到今天前端必备技能 React 和 Vue，始终贯彻着数据驱动UI这一模式，好处之多无需赘言。想要实现这一点有很多途径，我自己也尝试着做了一套，实现了一些基本功能。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/mvvm/watcher_test.png">
-<meta property="og:updated_time" content="2019-08-07T10:01:03.024Z">
+<meta property="og:updated_time" content="2019-08-16T07:33:02.816Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="简单易懂的MVVM实现之Watcher（一）">
 <meta name="twitter:description" content="MVVM 大家都不陌生了，它把前端开发者用复杂的 dom 操作中彻底解放了出来，从当年让人惊为天人的 Angularjs，到今天前端必备技能 React 和 Vue，始终贯彻着数据驱动UI这一模式，好处之多无需赘言。想要实现这一点有很多途径，我自己也尝试着做了一套，实现了一些基本功能。">
@@ -309,8 +309,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-08-07T18:01:03+08:00">
-                2019-08-07
+              <time title="更新于" itemprop="dateModified" datetime="2019-08-16T15:33:02+08:00">
+                2019-08-16
               </time>
             
           </span>
@@ -387,10 +387,9 @@
 <li>生命周期</li>
 <li>回调方法</li>
 </ul>
-<p>然后定义一套数据结构模型</p>
+<p>然后定义一套仿vue的数据结构模型</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> MVVM(&#123;</span><br><span class="line">  el: <span class="built_in">document</span>.getElementById(<span class="string">'root'</span>),</span><br><span class="line">  data: &#123;</span><br><span class="line">    name: <span class="string">''</span>,</span><br><span class="line">    age: <span class="string">''</span>,</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  computed: &#123;</span><br><span class="line">    ageText() &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.age + <span class="string">'岁'</span>;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  inited() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'inited'</span>);</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  methods: &#123;</span><br><span class="line">    handleClick() &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'clicked'</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>你会发现上面的结构和<code>vue</code>的语法很像。没错，就是仿着 vuejs 的语法来实现的。</p>
-<h2 id="访问器"><a href="#访问器" class="headerlink" title="访问器"></a>访问器</h2><p>既然选择了 vue 的模式，那么就是通过属性访问的方式（如<code>this.xx</code>）触发 ui 更改，这样就需要了解<code>Object.defineProperty</code>（<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="noopener">文档</a>）这个方法，它提供了让我们可以拦截属性赋值和访问的途径，让我们可以在属性改变时做一些额外的操作。</p>
+<h2 id="访问器"><a href="#访问器" class="headerlink" title="访问器"></a>访问器</h2><p>想要对数据的访问进行监听，就需要通过<code>Object.defineProperty</code>（<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="noopener">文档</a>）这个方法，它提供了让我们可以拦截属性赋值和访问的途径，让我们可以在属性改变时做一些额外的操作。</p>
 <p>下面将属性的声明进行封装，通过一个额外的<code>cb</code>回调属性对数据的改动进行监听。</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Token &#123;</span><br><span class="line">  <span class="keyword">private</span> value: <span class="built_in">any</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params">config: &#123; obj: <span class="built_in">any</span>; key: <span class="built_in">string</span>; value: <span class="built_in">any</span>; cb: Callback &#125;</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> scope = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">const</span> &#123; key, value, obj, cb &#125; = config;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.value = value;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">      enumerable: <span class="literal">true</span>,</span><br><span class="line">      configurable: <span class="literal">true</span>,</span><br><span class="line">      <span class="keyword">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> scope.value;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="keyword">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> oldValue = scope.value;</span><br><span class="line">        scope.value = value;</span><br><span class="line">        <span class="keyword">if</span> (oldValue !== value) &#123;</span><br><span class="line">          cb(value, oldValue);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>封装的额外好处是可以将上一次的值缓存，这样一来在值改变时，可以和上一次的值作比较，从而避免触发无用的回调。</p>
@@ -464,8 +463,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/easy-mvvm-two-compiler/" rel="prev" title="简单易懂的MVVM实现之Compiler（二）">
-                简单易懂的MVVM实现之Compiler（二） <i class="fa fa-chevron-right"></i>
+              <a href="/easy-mvvm-three-mvvm/" rel="prev" title="简单易懂的MVVM实现之数据驱动模板（三）">
+                简单易懂的MVVM实现之数据驱动模板（三） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -557,7 +556,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
