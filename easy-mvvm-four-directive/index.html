@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="我们都知道 html 元素是通过标签属性来控制其效果的，例如input的value属性用于表示其值。然而很多情况下，html 内置的属性无法满足复杂的需求，指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性无法实现的复杂功能。">
+<meta name="description" content="我们都知道 html 元素是通过标签属性来控制其效果的，例如video的control属性，虽然只是一个简单的值，但是内部会有很复杂的实现：添加了video播放的视频的控制功能。而很多情况下，html 内置的属性无法满足千变万化的需求，于是指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性不支持功能。">
 <meta name="keywords" content="mvvm">
 <meta property="og:type" content="article">
 <meta property="og:title" content="简单易懂的MVVM实现之指令（四）">
 <meta property="og:url" content="http://yoursite.com/easy-mvvm-four-directive/index.html">
 <meta property="og:site_name" content="QiZhang&#39;s Blog">
-<meta property="og:description" content="我们都知道 html 元素是通过标签属性来控制其效果的，例如input的value属性用于表示其值。然而很多情况下，html 内置的属性无法满足复杂的需求，指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性无法实现的复杂功能。">
+<meta property="og:description" content="我们都知道 html 元素是通过标签属性来控制其效果的，例如video的control属性，虽然只是一个简单的值，但是内部会有很复杂的实现：添加了video播放的视频的控制功能。而很多情况下，html 内置的属性无法满足千变万化的需求，于是指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性不支持功能。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-29T11:47:41.532Z">
+<meta property="og:updated_time" content="2019-08-29T11:54:59.703Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="简单易懂的MVVM实现之指令（四）">
-<meta name="twitter:description" content="我们都知道 html 元素是通过标签属性来控制其效果的，例如input的value属性用于表示其值。然而很多情况下，html 内置的属性无法满足复杂的需求，指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性无法实现的复杂功能。">
+<meta name="twitter:description" content="我们都知道 html 元素是通过标签属性来控制其效果的，例如video的control属性，虽然只是一个简单的值，但是内部会有很复杂的实现：添加了video播放的视频的控制功能。而很多情况下，html 内置的属性无法满足千变万化的需求，于是指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性不支持功能。">
 
 
 
@@ -307,7 +307,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-08-29T19:47:41+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2019-08-29T19:54:59+08:00">
                 2019-08-29
               </time>
             
@@ -374,7 +374,7 @@
       
 
       
-        <p>我们都知道 html 元素是通过标签属性来控制其效果的，例如<code>input</code>的<code>value</code>属性用于表示其值。然而很多情况下，html 内置的属性无法满足复杂的需求，指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性无法实现的复杂功能。</p>
+        <p>我们都知道 html 元素是通过标签属性来控制其效果的，例如<code>video</code>的<code>control</code>属性，虽然只是一个简单的值，但是内部会有很复杂的实现：添加了<code>video</code>播放的视频的控制功能。而很多情况下，html 内置的属性无法满足千变万化的需求，于是指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性不支持功能。</p>
 <a id="more"></a>
 <h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><p>指令有<code>初始化-&gt;更新-&gt;销毁</code>三个生命周期。</p>
 <h3 id="初始化-bind"><a href="#初始化-bind" class="headerlink" title="初始化 bind"></a>初始化 bind</h3><p>bind 发生下模板初始化时，解析到指令后就会将指令进行初始化。</p>
@@ -384,7 +384,7 @@
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> MVVM &#123;</span><br><span class="line">  <span class="keyword">static</span> directive = <span class="function"><span class="keyword">function</span>(<span class="params">name: <span class="built_in">string</span>, config: DirectiveConfig</span>) </span>&#123;</span><br><span class="line">    directiveConfigMap.set(name, config);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>声明一个<code>foo</code>指令：</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MVVM.directive(<span class="string">'foo'</span>, &#123;</span><br><span class="line">  bind(el: <span class="built_in">any</span>, binding) &#123;&#125;,</span><br><span class="line">  update(el: <span class="built_in">any</span>, binding) &#123;&#125;,</span><br><span class="line">  unbind(el) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>在多数情况下，指令并不需要在卸载时进行操作，为了方便起见，我们也支持传入一个函数简写，替换<code>bind</code>和<code>update</code>。在指令<code>bind</code>和<code>update</code>声明周期触发时，这个函数都会触发。</p>
+<p>在多数情况下，指令并不需要在卸载时进行操作，为了方便起见，我们也支持传入一个函数简写，替换<code>bind</code>和<code>update</code>。在指令<code>bind</code>和<code>update</code>生命周期触发时，这个函数都会触发。</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MVVM.directive(<span class="string">'bar'</span>, (el: <span class="built_in">any</span>, binding) &#123;&#125;,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
 <h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>指令的实现并不复杂，原理和<code>Complier</code>类似，都是解析表达式，然后通过<code>Watcher</code>对数据进行监听，并在数据变动时触发对应的生命周期回调。</p>
 <h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><p>构造函数接受一下参数</p>
@@ -395,11 +395,11 @@
 <li><code>config</code> - 上文中的指令的声明配置</li>
 </ul>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Directive <span class="keyword">implements</span> IDestroy &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">    owner: IOwner,</span></span><br><span class="line"><span class="params">    el: HTMLElement,</span></span><br><span class="line"><span class="params">    exp: <span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">    config: DirectiveConfig</span></span><br><span class="line"><span class="params">  </span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>解析表达式，并监听所有依赖项的更改事件，添加到上下文的<code>$watcher</code>中。并将计算的值作为<code>value</code>传递给指令的<code>update</code>声明周期。</p>
+<p>解析表达式，并监听所有依赖项的更改事件，添加到上下文的<code>$watcher</code>中。并将计算的值作为<code>value</code>传递给指令的<code>update</code>生命周期。</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; expression, dependencies &#125; = parseExpression(exp, <span class="string">'this.$owner'</span>);</span><br><span class="line"><span class="keyword">const</span> fn = <span class="keyword">new</span> <span class="built_in">Function</span>(<span class="string">'return '</span> + expression).bind(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">this</span>.listener = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> value = fn();</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.config.update) &#123;</span><br><span class="line">    <span class="keyword">this</span>.config.update.call(<span class="keyword">this</span>, el, &#123; value, expression: exp &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">dependencies.forEach(<span class="function"><span class="params">dp</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">this</span>.$owner.$watcher.addListener(dp, <span class="keyword">this</span>.listener);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">this</span>.removeListeners = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  dependencies.forEach(<span class="function"><span class="params">dp</span> =&gt;</span></span><br><span class="line">    <span class="keyword">this</span>.$owner.$watcher.removeListener(dp, <span class="keyword">this</span>.listener)</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>在构造函数中触发指令的<code>bind</code>函数。</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.config.bind.call(<span class="keyword">this</span>, el, &#123;</span><br><span class="line">  value: fn(),</span><br><span class="line">  expression: exp,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h3 id="销毁"><a href="#销毁" class="headerlink" title="销毁"></a>销毁</h3><p>实现<code>IDestroy</code>接口，注销在<code>$watcher</code>上的事件监听，并触发<code>unBind</code>声明周期。</p>
+<h3 id="销毁"><a href="#销毁" class="headerlink" title="销毁"></a>销毁</h3><p>实现<code>IDestroy</code>接口，注销在<code>$watcher</code>上的事件监听，并触发<code>unBind</code>生命周期。</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">destroy() &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.config.unbind) &#123;</span><br><span class="line">    <span class="keyword">this</span>.config.unbind.call(<span class="keyword">this</span>, <span class="keyword">this</span>.$el);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">this</span>.removeListeners();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="指令前缀"><a href="#指令前缀" class="headerlink" title="指令前缀"></a>指令前缀</h3><p>为了区分指令与原生属性，我们需要加入<code>x-</code>作为前缀。</p>
 <h3 id="Compiler-中处理指令"><a href="#Compiler-中处理指令" class="headerlink" title="Compiler 中处理指令"></a>Compiler 中处理指令</h3><p>在<a href="/easy-mvvm-two-compiler/">Complier</a>一文中，由于还未接触指令，我们并没有处理，现在让我们补全吧。</p>
