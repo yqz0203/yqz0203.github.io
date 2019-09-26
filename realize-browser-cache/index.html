@@ -101,7 +101,7 @@
 <meta property="og:image" content="http://yoursite.com/images/browser_cache/vary-1.png">
 <meta property="og:image" content="http://yoursite.com/images/browser_cache/vary-2.png">
 <meta property="og:image" content="http://yoursite.com/images/browser_cache/vary-3.png">
-<meta property="og:updated_time" content="2019-09-23T09:38:09.463Z">
+<meta property="og:updated_time" content="2019-09-26T13:43:55.720Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解浏览器缓存">
 <meta name="twitter:description" content="缓存是一种将数据保存在本地，在下一次需要使用它时，无需从数据的源头而是直接本地读取的一种技术。在http中，缓存是非常重要的组成部分。">
@@ -322,8 +322,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-09-23T17:38:09+08:00">
-                2019-09-23
+              <time title="更新于" itemprop="dateModified" datetime="2019-09-26T21:43:55+08:00">
+                2019-09-26
               </time>
             
           </span>
@@ -468,7 +468,7 @@
 <p>这是第一次请求，获取了<code>Etag</code></p>
 <p><img src="/images/browser_cache/last-modified-1.png" alt=""></p>
 <p>这是第二次请求<br><img src="/images/browser_cache/last-modified-2.png" alt=""></p>
-<p>需要注意的是，如果响应头没有设置<code>cache-control</code>或者<code>expires</code>，那么浏览器会把<code>(Last-Modified - Date) / 10</code>的时间作为缓存的有效时间，相当于设置了<code>cache-control</code>，在有效期内也就不会往服务端发送请求校验了。</p>
+<p>需要注意的是，如果响应头没有设置<code>cache-control</code>或者<code>expires</code>，那么浏览器会把<code>(Date - Last-Modified) / 10</code>的时间作为缓存的有效时间，相当于设置了<code>cache-control</code>，在有效期内也就不会往服务端发送请求校验了。</p>
 <p>我们去掉上面的<code>res.setHeader(&#39;Cache-Control&#39;, &#39;no-cache&#39;);</code>运行后结果如下</p>
 <p><img src="/images/browser_cache/last-modified-3.png" alt=""></p>
 <p>下一次请求</p>
@@ -509,6 +509,7 @@
 <p>当需要缓存需要验证时，校验方式的优先级取决于代码的执行顺序。</p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
 <li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching_FAQ" target="_blank" rel="noopener">MDN</a></li>
+<li><a href="https://github.com/yqz0203/blog-demos/tree/master/httpcache" target="_blank" rel="noopener">DEMO</a></li>
 </ul>
 
       
