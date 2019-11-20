@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="sentry, koa, nextjs" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最新公司的新项目用到了nextjs + koa 做服务端渲染，同时集成了Sentry做异常监控。由于页面的代码可能会在服务端和客户端两个环境下运行，所以我们需要对他们分开监控。">
+<meta name="keywords" content="sentry, koa, nextjs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nextjs+koa集成sentry">
+<meta property="og:url" content="http://yoursite.com/nextjs-with-sentry/index.html">
+<meta property="og:site_name" content="QiZhang&#39;s Blog">
+<meta property="og:description" content="最新公司的新项目用到了nextjs + koa 做服务端渲染，同时集成了Sentry做异常监控。由于页面的代码可能会在服务端和客户端两个环境下运行，所以我们需要对他们分开监控。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/sentry_with_nextjs/next_pages_dir.png">
+<meta property="og:image" content="http://yoursite.com/images/sentry_with_nextjs/server_artifacts.png">
+<meta property="og:image" content="http://yoursite.com/images/sentry_with_nextjs/server_error_example.png">
+<meta property="og:updated_time" content="2019-11-20T02:24:36.954Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="nextjs+koa集成sentry">
+<meta name="twitter:description" content="最新公司的新项目用到了nextjs + koa 做服务端渲染，同时集成了Sentry做异常监控。由于页面的代码可能会在服务端和客户端两个环境下运行，所以我们需要对他们分开监控。">
+<meta name="twitter:image" content="http://yoursite.com/images/sentry_with_nextjs/next_pages_dir.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/nextjs-with-sentry/"/>
+
+
+
+
+
+  <title>nextjs+koa集成sentry | QiZhang's Blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-127594279-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">QiZhang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Life just like code</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/nextjs-with-sentry/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杨骐彰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QiZhang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">nextjs+koa集成sentry</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-18T10:15:35+08:00">
+                2019-11-18
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2019-11-20T10:24:36+08:00">
+                2019-11-20
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端技术/" itemprop="url" rel="index">
+                    <span itemprop="name">前端技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/nextjs-with-sentry/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="nextjs-with-sentry/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最新公司的新项目用到了<a href="https://github.com/zeit/next.js" target="_blank" rel="noopener">nextjs</a> + koa 做服务端渲染，同时集成了<a href="https://github.com/getsentry/sentry" target="_blank" rel="noopener">Sentry</a>做异常监控。由于页面的代码可能会在服务端和客户端两个环境下运行，所以我们需要对他们分开监控。</p>
+<a id="more"></a>
+<h2 id="sentry-依赖"><a href="#sentry-依赖" class="headerlink" title="sentry 依赖"></a>sentry 依赖</h2><p>sentry 提供了不同的模块来处理浏览器和服务端的监控</p>
+<ul>
+<li>浏览器 @sentry/browser</li>
+<li>服务端 @sentry/node</li>
+</ul>
+<h2 id="soucemap"><a href="#soucemap" class="headerlink" title="soucemap"></a>soucemap</h2><p>nextjs 默认没有生成 soucemap 文件，但是我们可以通过修改 webpack 配置来生成。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// next.config.js</span></span><br><span class="line"><span class="comment">// Copy from</span></span><br><span class="line"><span class="comment">// https://github.com/zeit/next-plugins/blob/6786c6c431d896757b870f112f89e1fcf7ac7ae6/packages/next-source-maps/index.js#L13</span></span><br><span class="line"></span><br><span class="line">webpack(options)&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; dev, isServer &#125; = options;</span><br><span class="line">  <span class="keyword">if</span> (!dev) &#123;</span><br><span class="line">    config.devtool = <span class="string">"source-map"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> plugin <span class="keyword">of</span> config.plugins) &#123;</span><br><span class="line">      <span class="keyword">if</span> (plugin.constructor.name === <span class="string">"UglifyJsPlugin"</span>) &#123;</span><br><span class="line">        plugin.options.sourceMap = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (config.optimization &amp;&amp; config.optimization.minimizer) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">const</span> plugin <span class="keyword">of</span> config.optimization.minimizer) &#123;</span><br><span class="line">        <span class="keyword">if</span> (plugin.constructor.name === <span class="string">"TerserPlugin"</span>) &#123;</span><br><span class="line">          plugin.options.sourceMap = <span class="literal">true</span>;</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> config;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h2><h3 id="捕获"><a href="#捕获" class="headerlink" title="捕获"></a>捕获</h3><p>使用 nextjs 做服务端渲染时，我们是通过在页面组件上的静态方法<code>getInitialProps</code>来初始化页面数据，并通过<code>props</code>传递给页面组件，从而在服务端完成页面渲染。在这个过程中会有以下几个可能几个异常点</p>
+<ul>
+<li><code>getInitialProps</code> 调用链抛出了异常，如空指针等</li>
+<li><code>getInitialProps</code> 存在未捕获的<code>rejection</code>态</li>
+<li>页面组件在初始化首次<code>render</code>过程中抛出的异常</li>
+</ul>
+<p>而坑爹的是，nextjs 在内部处理了异常，却没有把错误在服务端层面抛出</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// next-server.js源码</span></span><br><span class="line"><span class="keyword">async</span> renderErrorToHTML(err, req, res, _pathname, query = &#123;&#125;) &#123;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> <span class="keyword">this</span>.findPageComponents(<span class="string">'/_error'</span>, query);</span><br><span class="line">    <span class="keyword">let</span> html;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        html = <span class="keyword">await</span> <span class="keyword">this</span>.renderToHTMLWithComponents(req, res, <span class="string">'/_error'</span>, query, result, <span class="built_in">Object</span>.assign(&#123;&#125;, <span class="keyword">this</span>.renderOpts, &#123; err &#125;));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 这里捕获了异常，所以服务端中间件中不会捕获到错误</span></span><br><span class="line">    <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(err);</span><br><span class="line">        res.statusCode = <span class="number">500</span>;</span><br><span class="line">        html = <span class="string">'Internal Server Error'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> html;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+<p>所幸的是，如果我们在<code>_error.js</code>自定义错误页的话，可以在<code>getInitialProps</code>的参数<code>ctx</code>中得到<code>error</code>对象。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> getInitialProps(&#123; res, err &#125;: NextPageContext) &#123;</span><br><span class="line">  <span class="comment">// 上报error</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是<code>getInitialProps</code>钩子函数在浏览器端也是会执行的，如在 render 的过程中报错，被 App 的<code>componentDidCatch</code>捕获后也会渲染 error.js 页面 。为了让客户端和服务端的依赖干净和分离，我更倾向于与在服务端代码中来捕获异常。上面提到了 next 并没有把 react 渲染层的异常抛出来，那我们只能用一些 hack 的方式来处理。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app是nextApp实例</span></span><br><span class="line"><span class="comment">// 先保存原始方法</span></span><br><span class="line"><span class="keyword">const</span> sourceRenderErrorToHTML = app.renderErrorToHTML.bind(app);</span><br><span class="line"><span class="comment">// 重写renderErrorToHTML，这个时候我们是可以得到error对象的。</span></span><br><span class="line">app.renderErrorToHTML = <span class="keyword">async</span> (err: any, req, res, pathname, query) =&gt; &#123;</span><br><span class="line">  <span class="keyword">let</span> userId = <span class="string">""</span>;</span><br><span class="line">  <span class="keyword">if</span> (req.headers.cookie) &#123;</span><br><span class="line">    <span class="comment">// 如果有需要的话，可以将用户数据解析出来，让监控信息更完善</span></span><br><span class="line">    <span class="keyword">const</span> matched = req.headers.cookie.match(<span class="regexp">/sess=(\d+)_/</span>);</span><br><span class="line">    <span class="keyword">if</span> (matched) &#123;</span><br><span class="line">      [, userId] = matched;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (err) &#123;</span><br><span class="line">    sentry.captureException(err, &#123; <span class="attr">id</span>: userId &#125;, err.extraObj || &#123;&#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 执行原方法</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">await</span> sourceRenderErrorToHTML(err, req, res, pathname, query);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="上传到-sentry"><a href="#上传到-sentry" class="headerlink" title="上传到 sentry"></a>上传到 sentry</h3><p>sentry 提供了 release 管理功能，即将源码上传到 sentry，这样 sentry 就能将异常的堆栈信息和源码比对，从而定位到保持错误对应的源代码。那么 nextjs 打包的文件在哪呢？</p>
+<p>每次打包后，nextjs 会在配置的本地根目录下创建一个<code>.next</code>文件夹，在<code>.next/server/staic</code>目录下会有一个由字符串命名的文件夹，这个文件夹的名字则是 nextjs 打包生成的<code>BUILD_ID</code>，这个文件夹下的<code>pages</code>文件夹就存放在我们的页面文件，每一个文件都代表一个页面。而这些页面文件都是用于服务端渲染时用的，所以每个文件都会包含所需的全部代码。</p>
+<p><img src="/images/sentry_with_nextjs/next_pages_dir.png" alt=""></p>
+<p>所以在打包后，我们需要知道<code>BUILD_ID</code>才能知道文件所在的目录，而在每次打包后，<code>.next/</code>目录下会生成一个<code>BUILD_ID</code>文件，文件的内容就是本次生成的<code>BUILD_ID</code>。通过读取这个文件便能知道打包文件所在的位置。</p>
+<p>由于上传后的文件名只包含了<code>static</code>之后的路径，所以需要使用命令行的 <code>--url-prefix</code> 参数添加路径前缀，让路径从根目录开始计算。上传的代码大致如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 先执行打包，生成 BUILD_ID</span></span><br><span class="line"><span class="keyword">const</span> buildFile = path.join(__dirname, <span class="string">"../../client/.next/BUILD_ID"</span>);</span><br><span class="line"><span class="keyword">const</span> nextBuildId = fs.readFileSync(buildFile).toString();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> releaseServerFiles = <span class="function"><span class="params">subdir</span> =&gt;</span> &#123;</span><br><span class="line">  run(</span><br><span class="line">    <span class="string">`./node_modules/.bin/sentry-cli --auth=xxx --url=yyy releases -o "medlinker" -p "web-ih-server" files <span class="subst">$&#123;VERSION&#125;</span> upload-sourcemaps <span class="subst">$&#123;path.join(</span></span></span><br><span class="line"><span class="string"><span class="subst">      __dirname,</span></span></span><br><span class="line"><span class="string"><span class="subst">      <span class="string">`../../client/.next/server/static/`</span>,</span></span></span><br><span class="line"><span class="string"><span class="subst">      subdir</span></span></span><br><span class="line"><span class="string"><span class="subst">    )&#125;</span> --url-prefix 'app:///client/.next/server/static/<span class="subst">$&#123;subdir&#125;</span>/'`</span></span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">releaseServerFiles(nextBuildId);</span><br></pre></td></tr></table></figure>
+<p><img src="/images/sentry_with_nextjs/server_artifacts.png" alt=""></p>
+<p>到此为止就可以了吗？并没有。因为当代码部署到服务器后，nodejs 抛出的异常的是文件包含完整的路径的，比如 <strong>/user/xxx/xxx/xx/.client/server/static/yyyy/pages/xx.js</strong> 这样的路径。而我们上传的文件名是从项目根路径开始计算的，也就是说 sentry 无法判断异常来自哪一个文件。</p>
+<p>好在 sentry 提供了<code>RewriteFrames</code>这个插件，在上传异常前重写错误堆栈中的路径信息。我们将根目录指定成当前项目路径，这个插件就会去掉项目文件夹之前那部分路径，这样一来堆栈中的文件路径就和上传的文件保持一致了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; RewriteFrames &#125; <span class="keyword">from</span> <span class="string">"@sentry/integrations"</span>;</span><br><span class="line"></span><br><span class="line">Sentry.init(&#123;</span><br><span class="line">  <span class="comment">// 其他配置</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  integrations: [</span><br><span class="line">    <span class="keyword">new</span> RewriteFrames(&#123;</span><br><span class="line">      root: path.resolve(<span class="string">"."</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>绿色框框中就是我们源码</p>
+<p><img src="/images/sentry_with_nextjs/server_error_example.png" alt=""></p>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><p>客户端的流程和服务端基本一致，但有如下几点区别</p>
+<ul>
+<li>客户端 js 代码在<code>.next/static/chunks</code>，<code>.next/static/runtime</code>，<code>.next/static/pages</code>目录下</li>
+<li>sentry 默认会下根据代码文件底部的 <code>//# sourceMappingURL=_</code> 自动加载 sourcemap，这是最简单的方法。但是这样容易在客户端暴露源码，一般来说我们会不上传 map 文件到服务器或者对 map 文件禁止访问。这种情况下我们需要和服务端代码一样，把打包后的代码和 map 文件上传到 release 的工件库，sentry 也就能正确识别 soucemap 了。</li>
+<li>如果手动上传 sentry，需要上传上述的三个文件夹</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>next 打包</li>
+<li>通过 BUILD_ID 找到打包的目录</li>
+<li>上传文件和 sourcemap 到 sentry 并重写路径</li>
+<li>服务端上传前重写异常的堆栈信息</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/realize-browser-cache/" rel="next" title="理解浏览器缓存">
+                <i class="fa fa-chevron-left"></i> 理解浏览器缓存
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="杨骐彰" />
+            
+              <p class="site-author-name" itemprop="name">杨骐彰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yqz0203" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yqz0203@hotmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#sentry-依赖"><span class="nav-number">1.</span> <span class="nav-text">sentry 依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soucemap"><span class="nav-number">2.</span> <span class="nav-text">soucemap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务端"><span class="nav-number">3.</span> <span class="nav-text">服务端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#捕获"><span class="nav-number">3.1.</span> <span class="nav-text">捕获</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传到-sentry"><span class="nav-number">3.2.</span> <span class="nav-text">上传到 sentry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端"><span class="nav-number">3.3.</span> <span class="nav-text">客户端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杨骐彰</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://QiZhang.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/nextjs-with-sentry/';
+          this.page.identifier = 'nextjs-with-sentry/';
+          this.page.title = 'nextjs+koa集成sentry';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://QiZhang.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
