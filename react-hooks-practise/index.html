@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="工具,flowtype,react," />
+  <meta name="keywords" content="react," />
 
 
 
@@ -80,7 +80,7 @@
 
 
 <meta name="description" content="React Hooks 是 React V16.8 加入的新特性，它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。 它主要为了解决 React 长期以来的以下几个问题  在组件之间复用状态逻辑很难，例如分页，上传文件等附带状态的逻辑需要每个页面都写一份 复杂组件变得难以理解，生命周期函数如componentWillReciceProps需要大量的条件对比代码">
-<meta name="keywords" content="工具,flowtype,react">
+<meta name="keywords" content="react">
 <meta property="og:type" content="article">
 <meta property="og:title" content="React hooks 实践">
 <meta property="og:url" content="https://yqz0203.github.io/react-hooks-practise/index.html">
@@ -90,7 +90,7 @@
 <meta property="og:image" content="https://codesandbox.io/static/img/play-codesandbox.svg">
 <meta property="og:image" content="https://codesandbox.io/static/img/play-codesandbox.svg">
 <meta property="og:image" content="https://codesandbox.io/static/img/play-codesandbox.svg">
-<meta property="og:updated_time" content="2019-12-23T01:27:37.839Z">
+<meta property="og:updated_time" content="2020-01-07T05:47:22.904Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React hooks 实践">
 <meta name="twitter:description" content="React Hooks 是 React V16.8 加入的新特性，它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。 它主要为了解决 React 长期以来的以下几个问题  在组件之间复用状态逻辑很难，例如分页，上传文件等附带状态的逻辑需要每个页面都写一份 复杂组件变得难以理解，生命周期函数如componentWillReciceProps需要大量的条件对比代码">
@@ -311,8 +311,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-12-23T09:27:37+08:00">
-                2019-12-23
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-07T13:47:22+08:00">
+                2020-01-07
               </time>
             
           </span>
@@ -409,7 +409,7 @@
 <blockquote>
 <p>The reasons for why this is can’t be explained without going fairly deep into the current implementation details- which probably wouldn’t be that useful and they’re likely to change in an upcoming release as we continue working on new APIs like concurrent mode and suspense.</p>
 </blockquote>
-<p>简单的说就是：你没必要了解那么多细节，知道怎么用就行了。。￣□￣｜｜</p>
+<p>简单的说就是：你没必要了解那么多细节，知道怎么用就行了。。￣ □ ￣｜｜</p>
 <p>使用 useState 还有一些技巧。</p>
 <h4 id="函数初始化"><a href="#函数初始化" class="headerlink" title="函数初始化"></a>函数初始化</h4><p>State 的初始值需要一些复杂的计算，由于使用 hooks 只能在函数组件中使用，每一次渲染会时整个函数内部的代码都会执行一次。</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Comp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 一些非常复杂的计算</span></span><br><span class="line">  <span class="keyword">const</span> initialState = someExpensiveCal();</span><br><span class="line">  <span class="keyword">const</span> [state, setState] = useState(initialState);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -462,10 +462,6 @@
       
         <div class="post-tags">
           
-            <a href="/tags/工具/" rel="tag"># 工具</a>
-          
-            <a href="/tags/flowtype/" rel="tag"># flowtype</a>
-          
             <a href="/tags/react/" rel="tag"># react</a>
           
         </div>
@@ -488,6 +484,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/webpack-event-module-tapable/" rel="prev" title="Webpack事件流模块-tapable">
+                Webpack事件流模块-tapable <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -578,7 +578,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -600,7 +600,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -669,7 +669,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
