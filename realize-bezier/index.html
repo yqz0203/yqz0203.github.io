@@ -87,16 +87,16 @@
 <meta property="og:site_name" content="QiZhang&#39;s Blog">
 <meta property="og:description" content="贝塞尔曲线为绘制平滑曲线提供了数学理论，也是很多动画绘制的基础，在我们前端开发的过程中也常常使用它控制动画的执行速度（animation-timing-function）。那么这个曲线实现的原理是什么呢，让我们一探究竟吧。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://yqz0203.github.io/images/besizer/formula.png">
+<meta property="og:image" content="https://yqz0203.github.io/images/bezier/formula.png">
 <meta property="og:image" content="https://yqz0203.github.io/images/bezier/levelone.gif">
 <meta property="og:image" content="https://yqz0203.github.io/images/bezier/leveltwo.gif">
 <meta property="og:image" content="https://yqz0203.github.io/images/bezier/levelthree.gif">
 <meta property="og:image" content="https://yqz0203.github.io/images/bezier/levelfour.gif">
-<meta property="og:updated_time" content="2020-03-30T01:32:24.636Z">
+<meta property="og:updated_time" content="2020-03-30T01:53:53.063Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解贝塞尔曲线原理">
 <meta name="twitter:description" content="贝塞尔曲线为绘制平滑曲线提供了数学理论，也是很多动画绘制的基础，在我们前端开发的过程中也常常使用它控制动画的执行速度（animation-timing-function）。那么这个曲线实现的原理是什么呢，让我们一探究竟吧。">
-<meta name="twitter:image" content="https://yqz0203.github.io/images/besizer/formula.png">
+<meta name="twitter:image" content="https://yqz0203.github.io/images/bezier/formula.png">
 
 
 
@@ -313,7 +313,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-03-30T09:32:24+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2020-03-30T09:53:53+08:00">
                 2020-03-30
               </time>
             
@@ -362,7 +362,7 @@
 <a id="more"></a>
 <h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>贝塞尔曲线的轨迹由多个<strong>控制点</strong>决定，根据控制点的多少可以分为一阶、二阶、三阶以至于 n 阶的贝塞尔曲线。</p>
 <h3 id="一阶"><a href="#一阶" class="headerlink" title="一阶"></a>一阶</h3><p>一阶贝塞尔由 2 个控制点 P0 和 P1 构成，公式如下</p>
-<p><img src="/images/besizer/formula.png" alt=""></p>
+<p><img src="/images/bezier/formula.png" alt=""></p>
 <p>由公式可以看出，B(t)绘制出来的应该是一条直线，所以一阶公式也称为线性公式。</p>
 <p>我们也可以简单看出绘制的原理，在 P0 和 P1 直接有个移动的点，从 P0 作为起点，随着时间的推移，慢慢向 P2 移动，移动的轨迹就是得到的曲线。</p>
 <p><img src="/images/bezier/levelone.gif" width="300"></p>
