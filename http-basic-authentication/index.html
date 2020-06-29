@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="huffman" />
+  <meta name="keywords" content="身份验证,Http," />
 
 
 
@@ -79,24 +79,22 @@
 
 
 
-<meta name="description" content="最近研究 http2.0，在看到请求头压缩这一块内容时，说到应用了静态哈夫曼编码对标头进行了压缩。哈夫曼编码大一时就已经学过，时隔多年，除了记忆中还存留着老师那几页模糊的 PPT 的印象，具体的内容早已忘得一干二净。 在继续 http2.0 的学习之前，先重温下 huffman 编码吧。">
-<meta name="keywords" content="huffman">
+<meta name="description" content="身份验证又称鉴权，是获取一个资源前的一个校验过程。比如你要进入一栋锁着的房子，必须通过拿出钥匙开锁才能进入。这里的”钥匙“我们一般称为”凭据“（token）。我们开发过程中会使用很多种不同的鉴权方案，具体实现一般跟业务相关。Http 协议自身也约定了一些鉴权方式，让我们来看看吧。">
+<meta name="keywords" content="身份验证,Http">
 <meta property="og:type" content="article">
-<meta property="og:title" content="重温哈夫曼编码">
-<meta property="og:url" content="https://yqz0203.github.io/huffman/index.html">
+<meta property="og:title" content="HTTP Basic Authentication">
+<meta property="og:url" content="https://yqz0203.github.io/http-basic-authentication/index.html">
 <meta property="og:site_name" content="QiZhang&#39;s Blog">
-<meta property="og:description" content="最近研究 http2.0，在看到请求头压缩这一块内容时，说到应用了静态哈夫曼编码对标头进行了压缩。哈夫曼编码大一时就已经学过，时隔多年，除了记忆中还存留着老师那几页模糊的 PPT 的印象，具体的内容早已忘得一干二净。 在继续 http2.0 的学习之前，先重温下 huffman 编码吧。">
+<meta property="og:description" content="身份验证又称鉴权，是获取一个资源前的一个校验过程。比如你要进入一栋锁着的房子，必须通过拿出钥匙开锁才能进入。这里的”钥匙“我们一般称为”凭据“（token）。我们开发过程中会使用很多种不同的鉴权方案，具体实现一般跟业务相关。Http 协议自身也约定了一些鉴权方式，让我们来看看吧。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://yqz0203.github.io/images/huffman/step-1.png">
-<meta property="og:image" content="https://yqz0203.github.io/images/huffman/step-2.png">
-<meta property="og:image" content="https://yqz0203.github.io/images/huffman/step-3.png">
-<meta property="og:image" content="https://yqz0203.github.io/images/huffman/step-4.png">
-<meta property="og:image" content="https://yqz0203.github.io/images/huffman/step-5.png">
-<meta property="og:updated_time" content="2020-04-18T10:27:47.081Z">
+<meta property="og:image" content="https://yqz0203.github.io/images/http_oauth/basic_flow.png">
+<meta property="og:image" content="https://yqz0203.github.io/images/http_oauth/demo1.png">
+<meta property="og:image" content="https://yqz0203.github.io/images/http_oauth/demo2.png">
+<meta property="og:updated_time" content="2020-05-20T02:16:07.176Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="重温哈夫曼编码">
-<meta name="twitter:description" content="最近研究 http2.0，在看到请求头压缩这一块内容时，说到应用了静态哈夫曼编码对标头进行了压缩。哈夫曼编码大一时就已经学过，时隔多年，除了记忆中还存留着老师那几页模糊的 PPT 的印象，具体的内容早已忘得一干二净。 在继续 http2.0 的学习之前，先重温下 huffman 编码吧。">
-<meta name="twitter:image" content="https://yqz0203.github.io/images/huffman/step-1.png">
+<meta name="twitter:title" content="HTTP Basic Authentication">
+<meta name="twitter:description" content="身份验证又称鉴权，是获取一个资源前的一个校验过程。比如你要进入一栋锁着的房子，必须通过拿出钥匙开锁才能进入。这里的”钥匙“我们一般称为”凭据“（token）。我们开发过程中会使用很多种不同的鉴权方案，具体实现一般跟业务相关。Http 协议自身也约定了一些鉴权方式，让我们来看看吧。">
+<meta name="twitter:image" content="https://yqz0203.github.io/images/http_oauth/basic_flow.png">
 
 
 
@@ -126,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="https://yqz0203.github.io/huffman/"/>
+  <link rel="canonical" href="https://yqz0203.github.io/http-basic-authentication/"/>
 
 
 
 
 
-  <title>重温哈夫曼编码 | QiZhang's Blog</title>
+  <title>HTTP Basic Authentication | QiZhang's Blog</title>
   
 
 
@@ -268,7 +266,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://yqz0203.github.io/huffman/">
+    <link itemprop="mainEntityOfPage" href="https://yqz0203.github.io/http-basic-authentication/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="杨骐彰">
@@ -285,7 +283,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">重温哈夫曼编码</h2>
+          <h2 class="post-title" itemprop="name headline">HTTP Basic Authentication</h2>
         
 
         <div class="post-meta">
@@ -297,8 +295,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-18T10:30:19+08:00">
-                2020-04-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-19T11:30:41+08:00">
+                2020-05-19
               </time>
             
 
@@ -313,8 +311,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-04-18T18:27:47+08:00">
-                2020-04-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-05-20T10:16:07+08:00">
+                2020-05-20
               </time>
             
           </span>
@@ -332,8 +330,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/数据结构和算法/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构和算法</span>
+                  <a href="/categories/Server技术/" itemprop="url" rel="index">
+                    <span itemprop="name">Server技术</span>
                   </a>
                 </span>
 
@@ -350,9 +348,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/huffman/#comments" itemprop="discussionUrl">
+                <a href="/http-basic-authentication/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="huffman/" itemprop="commentCount"></span>
+                        data-disqus-identifier="http-basic-authentication/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -380,60 +378,33 @@
       
 
       
-        <p>最近研究 http2.0，在看到<a href="https://developers.google.com/web/fundamentals/performance/http2?hl=zh-cn#%E6%A0%87%E5%A4%B4%E5%8E%8B%E7%BC%A9" target="_blank" rel="noopener">请求头压缩</a>这一块内容时，说到应用了静态哈夫曼编码对标头进行了压缩。哈夫曼编码大一时就已经学过，时隔多年，除了记忆中还存留着老师那几页模糊的 PPT 的印象，具体的内容早已忘得一干二净。</p>
-<p>在继续 http2.0 的学习之前，先重温下 huffman 编码吧。</p>
+        <p>身份验证又称鉴权，是获取一个资源前的一个校验过程。比如你要进入一栋锁着的房子，必须通过拿出钥匙开锁才能进入。这里的”钥匙“我们一般称为”凭据“（token）。我们开发过程中会使用很多种不同的鉴权方案，具体实现一般跟业务相关。Http 协议自身也约定了一些鉴权方式，让我们来看看吧。</p>
 <a id="more"></a>
-<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>哈夫曼编码(Huffman Coding)，又称霍夫曼编码，是一种编码方式，哈夫曼编码是可变字长编码(VLC)的一种。Huffman 于 1952 年提出一种编码方法，该方法完全依据字符出现概率来构造异字头的平均长度最短的码字，有时称之为最佳编码，一般就叫做 Huffman 编码（有时也称为霍夫曼编码)。- 百度词条</p>
-<h2 id="编码原理"><a href="#编码原理" class="headerlink" title="编码原理"></a>编码原理</h2><p>总的来说，huffman 编码分为以下几步。</p>
-<ol>
-<li>统计每个字符出现的次数（或者概率），每一个字符当做一个节点，节点值为其概率，放到一个列表中。</li>
-<li>按照节点概率的大小从大到小进行排列。</li>
-<li>将最小概率的 2 个节点挂载到一个新的节点上，新节点的概率值为 2 个子节点相加，较大的节点放新节点的左侧，权值为 “0”，较小的放右侧，权值为 “1”。，从列表中移除 2 个节点并添加新的节点。如果新节点的概率大于或等于列表前面的节点概率，则新节点往前冒泡。</li>
-<li>如果列表长度大于 1，回到第 3 步骤继续。</li>
-<li>最后结果会生成一个二叉树。从根节点到每个字符所对应节点的路径上遇到的权值拼接后就是这个字符的 huffman 编码。</li>
-</ol>
-<p>上面的文字描述可能有点绕，还是通过例子来的走一遍。</p>
-<p>比如有一个字符串 <code>aabbcccdddddeee</code>。</p>
-<p>统计可知出现的概率如下</p>
+<h2 id="Http-基础验证"><a href="#Http-基础验证" class="headerlink" title="Http 基础验证"></a>Http 基础验证</h2><p><code>HTTP Basic Authentication</code> 顾名思义是一种非常简单的基础验证协议。</p>
+<p>基础到什么程度呢？它是将用户的账号和密码通过<code>用户名:密码</code>拼接后再进行 base64 加密后，放到 http 头部进行传输。由于 base64 编码是可逆的，意味着账号密码是在网络中明文传输的，所以一般需要通过 https 来保证传输过程的安全。</p>
+<p><img src="/images/http_oauth/basic_flow.png" alt=""></p>
+<p>下面我们用 nodejs 来实现 Basic 验证</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; createServer &#125; = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = createServer(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.writeHead(<span class="number">401</span>, &#123;</span><br><span class="line">    <span class="string">'WWW-Authenticate'</span>: <span class="string">'Basic realm="test"'</span>,</span><br><span class="line">  &#125;);</span><br><span class="line">  res.write(<span class="string">'401 Authorization Required'</span>);</span><br><span class="line">  res.end();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.listen(<span class="string">'5000'</span>, () =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'&gt; listen on http://localhost:5000'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>我们打开浏览器，访问 <code>http://localhost:5000</code> 得到如下</p>
+<p><img src="/images/http_oauth/demo1.png" alt="demo1"></p>
+<p>浏览器之所以知道需要弹出个窗口，是因为我们在响应头中返回了<code>WWW-Authenticate</code>，这个头部是 http 身份验证的一部分。</p>
+<h3 id="WWW-Authenticate"><a href="#WWW-Authenticate" class="headerlink" title="WWW-Authenticate"></a><code>WWW-Authenticate</code></h3><p>定义了使用何种验证方式去获取对资源的连接。它的格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[type] realm=&lt;realm&gt;</span><br></pre></td></tr></table></figure>
 <ul>
-<li>a - 2/15</li>
-<li>b - 2/15</li>
-<li>c - 3/15</li>
-<li>d - 5/15</li>
-<li>e - 3/15</li>
+<li><code>type</code> 鉴权的类型，比较常用的有<code>Basic</code>和<code>Bearer</code>，查看所有所有的类型点击<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Authentication_schemes" target="_blank" rel="noopener">这里</a></li>
+<li><code>reaml</code> 一个保护区域的描述。用于 server 区分不同的校验，个人理解对于客户端来说这个参数是没有直接用处的。</li>
 </ul>
-<p>首先将其从大到小排列</p>
-<p><img src="/images/huffman/step-1.png" alt=""></p>
-<p>按照上面的第 2 步，将 a，b 挂到新的父节点，新节点大于 c,e，所以移到前面，并在二叉树枝干上打上权值 1 和 0。</p>
-<p><img src="/images/huffman/step-2.png" alt=""></p>
-<p>重复第 2 步，将 c，e 挂到新的父节点。c 和 e 的新父节点大于之前的 ab，所以继续移到 ab 之前。</p>
-<p><img src="/images/huffman/step-3.png" alt=""></p>
-<p>重复第 2 步，将 ce，ab 挂到新的父节点，同理移到 d 的前面。</p>
-<p><img src="/images/huffman/step-4.png" alt=""></p>
-<p>重复第 2 步，将 ceab 和 d 挂到新的父节点。现在列表中只剩一个节点了。我们得到了一个包含所有节点的二叉树。</p>
-<p><img src="/images/huffman/step-5.png" alt=""></p>
-<h3 id="转换"><a href="#转换" class="headerlink" title="转换"></a>转换</h3><p>从上面的二叉树中，我们从根节点遍历，可以得到每个字符所在节点的路径。</p>
-<ul>
-<li>a 001</li>
-<li>b 000</li>
-<li>c 11</li>
-<li>d 01</li>
-<li>e 10</li>
+<h3 id="添加验证"><a href="#添加验证" class="headerlink" title="添加验证"></a>添加验证</h3><p>我们完善上面代码，加入对<code>authorization</code>请求头的解析，解析出账号密码。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> server = createServer(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> authorization = req.headers[<span class="string">'authorization'</span>];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (authorization) &#123;</span><br><span class="line">    <span class="keyword">const</span> [username, password] = Buffer.from(</span><br><span class="line">      authorization.split(<span class="string">' '</span>)[<span class="number">1</span>],</span><br><span class="line">      <span class="string">'base64'</span></span><br><span class="line">    )</span><br><span class="line">      .toString(<span class="string">'utf-8'</span>)</span><br><span class="line">      .split(<span class="string">':'</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (</span><br><span class="line">      reamls[<span class="string">'test'</span>].username === username ||</span><br><span class="line">      reamls[<span class="string">'test'</span>].password === password</span><br><span class="line">    ) &#123;</span><br><span class="line">      res.write(<span class="string">'200 hello world'</span>);</span><br><span class="line">      res.end();</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  res.writeHead(<span class="number">401</span>, &#123;</span><br><span class="line">    <span class="string">'WWW-Authenticate'</span>: <span class="string">`Basic realm="test2"`</span>,</span><br><span class="line">  &#125;);</span><br><span class="line">  res.write(<span class="string">'401 Authorization Required'</span>);</span><br><span class="line">  res.end();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>输入账号密码后，可以看到请求头添加了<code>authroize</code>字段。</p>
+<p><img src="/images/http_oauth/demo2.png" alt="demo1"></p>
+<p>这个就是浏览器生成的访问凭据，一般来说，在浏览器关闭前会一直存在。</p>
+<p>凭据是保存在浏览器内部的，而不是用的 cookie，localstorage 等存储方式。</p>
+<p>basic 验证由于采用账号密码明文传输，注定是一种不会长久的验证方式。下面我们将会学习<code>OAuth 2.0</code></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Authentication" target="_blank" rel="noopener">MDN-Authentication</a></li>
+<li><a href="https://tools.ietf.org/html/rfc7617" target="_blank" rel="noopener">rfc7617</a></li>
 </ul>
-<p>我们知道一个字符至少占用 1 个字节也就是 8bit，而上面经过 huffman 编码后的二进制长度少于 8bit<sup><a href="#备注">1</a></sup>。如果我们把所有字符用新的二进制表示，则可以减少字符串的长度<sup><a href="#备注">2</a></sup>。</p>
-<p>我们遍历原字符串，通过得到的二进制来存储，得到 0010010000001111110101010101101010。</p>
-<h2 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h2><p>huffman 解码的过程很简单。</p>
-<p>遍历得到的二进制，从树的根节点开始遍历，匹配到某个字符的路径后，回到树的根节点继续遍历，直到结束。</p>
-<p>那么这里会有个问题 “遍历二进制时不会走到错误的节点吗？”</p>
-<p>答案是不会的，因为在生成的二叉树中，所有字符所在叶子节点都是尽头节点，也就是说每一个字符所在节点的路径都是唯一的，不会出现路径互相覆盖的情况。</p>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>打不开请翻墙</p>
-<iframe src="https://codesandbox.io/embed/huffman-uvyum?fontsize=14&hidenavigation=1&theme=dark" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" title="huffman" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
-
-<h2 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h2><ol>
-<li>huffman 编码值可能大于 8bit，这和字符的概率有相关。</li>
-<li>这里没有考虑存储树信息的长度。</li>
-</ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://baike.baidu.com/item/%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/1719730?fr=aladdin#4_2" target="_blank" rel="noopener">百度百科：哈夫曼编码</a></p>
 
       
     </div>
@@ -451,7 +422,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/huffman/" rel="tag"># huffman</a>
+            <a href="/tags/身份验证/" rel="tag"># 身份验证</a>
+          
+            <a href="/tags/Http/" rel="tag"># Http</a>
           
         </div>
       
@@ -464,8 +437,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/realize-bezier/" rel="next" title="理解贝塞尔曲线原理">
-                <i class="fa fa-chevron-left"></i> 理解贝塞尔曲线原理
+              <a href="/huffman/" rel="next" title="重温哈夫曼编码">
+                <i class="fa fa-chevron-left"></i> 重温哈夫曼编码
               </a>
             
           </div>
@@ -474,8 +447,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/http-basic-authentication/" rel="prev" title="HTTP Basic Authentication">
-                HTTP Basic Authentication <i class="fa fa-chevron-right"></i>
+              <a href="/offline-magic-service-worker/" rel="prev" title="离线应用的魔法 - service worker">
+                离线应用的魔法 - service worker <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -652,7 +625,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编码原理"><span class="nav-number">2.</span> <span class="nav-text">编码原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#转换"><span class="nav-number">2.1.</span> <span class="nav-text">转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解码"><span class="nav-number">3.</span> <span class="nav-text">解码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码实现"><span class="nav-number">4.</span> <span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备注"><span class="nav-number">5.</span> <span class="nav-text">备注</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Http-基础验证"><span class="nav-number">1.</span> <span class="nav-text">Http 基础验证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WWW-Authenticate"><span class="nav-number">1.1.</span> <span class="nav-text">WWW-Authenticate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加验证"><span class="nav-number">1.2.</span> <span class="nav-text">添加验证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">2.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
             
 
           </div>
@@ -822,9 +795,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'https://yqz0203.github.io/huffman/';
-          this.page.identifier = 'huffman/';
-          this.page.title = '重温哈夫曼编码';
+          this.page.url = 'https://yqz0203.github.io/http-basic-authentication/';
+          this.page.identifier = 'http-basic-authentication/';
+          this.page.title = 'HTTP Basic Authentication';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://QiZhang.disqus.com/embed.js';
