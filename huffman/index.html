@@ -92,7 +92,7 @@
 <meta property="og:image" content="https://yqz0203.github.io/images/huffman/step-3.png">
 <meta property="og:image" content="https://yqz0203.github.io/images/huffman/step-4.png">
 <meta property="og:image" content="https://yqz0203.github.io/images/huffman/step-5.png">
-<meta property="og:updated_time" content="2020-04-18T10:27:47.081Z">
+<meta property="og:updated_time" content="2021-08-05T02:40:55.132Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="重温哈夫曼编码">
 <meta name="twitter:description" content="最近研究 http2.0，在看到请求头压缩这一块内容时，说到应用了静态哈夫曼编码对标头进行了压缩。哈夫曼编码大一时就已经学过，时隔多年，除了记忆中还存留着老师那几页模糊的 PPT 的印象，具体的内容早已忘得一干二净。 在继续 http2.0 的学习之前，先重温下 huffman 编码吧。">
@@ -313,8 +313,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-04-18T18:27:47+08:00">
-                2020-04-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-08-05T10:40:55+08:00">
+                2021-08-05
               </time>
             
           </span>
@@ -419,14 +419,14 @@
 <p><img src="/images/huffman/step-5.png" alt=""></p>
 <h3 id="转换"><a href="#转换" class="headerlink" title="转换"></a>转换</h3><p>从上面的二叉树中，我们从根节点遍历，可以得到每个字符所在节点的路径。</p>
 <ul>
-<li>a 001</li>
-<li>b 000</li>
-<li>c 11</li>
-<li>d 01</li>
-<li>e 10</li>
+<li>a 010</li>
+<li>b 011</li>
+<li>c 10</li>
+<li>d 00</li>
+<li>e 11</li>
 </ul>
 <p>我们知道一个字符至少占用 1 个字节也就是 8bit，而上面经过 huffman 编码后的二进制长度少于 8bit<sup><a href="#备注">1</a></sup>。如果我们把所有字符用新的二进制表示，则可以减少字符串的长度<sup><a href="#备注">2</a></sup>。</p>
-<p>我们遍历原字符串，通过得到的二进制来存储，得到 0010010000001111110101010101101010。</p>
+<p>我们遍历原字符串，通过得到的二进制来存储，得到 0100100110111010100000000000111111</p>
 <h2 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h2><p>huffman 解码的过程很简单。</p>
 <p>遍历得到的二进制，从树的根节点开始遍历，匹配到某个字符的路径后，回到树的根节点继续遍历，直到结束。</p>
 <p>那么这里会有个问题 “遍历二进制时不会走到错误的节点吗？”</p>
