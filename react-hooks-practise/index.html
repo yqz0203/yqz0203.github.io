@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="react," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="React Hooks 是 React V16.8 加入的新特性，它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。 它主要为了解决 React 长期以来的以下几个问题  在组件之间复用状态逻辑很难，例如分页，上传文件等附带状态的逻辑需要每个页面都写一份 复杂组件变得难以理解，生命周期函数如componentWillReciceProps需要大量的条件对比代码">
+<meta name="keywords" content="react">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React hooks 实践">
+<meta property="og:url" content="https://yqz0203.github.io/react-hooks-practise/index.html">
+<meta property="og:site_name" content="QiZhang&#39;s Blog">
+<meta property="og:description" content="React Hooks 是 React V16.8 加入的新特性，它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。 它主要为了解决 React 长期以来的以下几个问题  在组件之间复用状态逻辑很难，例如分页，上传文件等附带状态的逻辑需要每个页面都写一份 复杂组件变得难以理解，生命周期函数如componentWillReciceProps需要大量的条件对比代码">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://codesandbox.io/static/img/play-codesandbox.svg">
+<meta property="og:image" content="https://codesandbox.io/static/img/play-codesandbox.svg">
+<meta property="og:image" content="https://codesandbox.io/static/img/play-codesandbox.svg">
+<meta property="og:updated_time" content="2020-01-07T05:47:22.904Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React hooks 实践">
+<meta name="twitter:description" content="React Hooks 是 React V16.8 加入的新特性，它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。 它主要为了解决 React 长期以来的以下几个问题  在组件之间复用状态逻辑很难，例如分页，上传文件等附带状态的逻辑需要每个页面都写一份 复杂组件变得难以理解，生命周期函数如componentWillReciceProps需要大量的条件对比代码">
+<meta name="twitter:image" content="https://codesandbox.io/static/img/play-codesandbox.svg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://yqz0203.github.io/react-hooks-practise/"/>
+
+
+
+
+
+  <title>React hooks 实践 | QiZhang's Blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-127594279-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">QiZhang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Life just like code</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yqz0203.github.io/react-hooks-practise/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杨骐彰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QiZhang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">React hooks 实践</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-19T13:51:02+08:00">
+                2019-12-19
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-07T13:47:22+08:00">
+                2020-01-07
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端技术/" itemprop="url" rel="index">
+                    <span itemprop="name">前端技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/react-hooks-practise/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="react-hooks-practise/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>React Hooks 是 React V16.8 加入的新特性，它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。</p>
+<p>它主要为了解决 React 长期以来的以下几个问题</p>
+<ol>
+<li>在组件之间复用状态逻辑很难，例如分页，上传文件等附带状态的逻辑需要每个页面都写一份</li>
+<li>复杂组件变得难以理解，生命周期函数如<code>componentWillReciceProps</code>需要大量的条件对比代码</li>
+<li>难以理解的 class</li>
+</ol>
+<h2 id="缓存函数（Memoization）"><a href="#缓存函数（Memoization）" class="headerlink" title="缓存函数（Memoization）"></a>缓存函数（Memoization）</h2><p>缓存函数是计算机提高计算性能一个手段，它将之前的计算结果存储起来，如果函数传入了相同的参数，就会取之前计算过的值，而不是从新执行一遍函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 斐波纳契数列，模拟耗时函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fib</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (n === <span class="number">0</span> || n === <span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">return</span> fib(n - <span class="number">1</span>) + fib(n - <span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="built_in">Date</span>.now();</span><br><span class="line">fib(<span class="number">40</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"1 Fib cost: "</span>, <span class="built_in">Date</span>.now() - s1, <span class="string">"ms"</span>); <span class="comment">// 1 Fib cost:  1464 ms</span></span><br><span class="line"><span class="keyword">let</span> s2 = <span class="built_in">Date</span>.now();</span><br><span class="line">fib(<span class="number">40</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"2 Fib cost: "</span>, <span class="built_in">Date</span>.now() - s2, <span class="string">"ms"</span>); <span class="comment">// 2 Fib cost:  1427 ms</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"All Fib cost: "</span>, <span class="built_in">Date</span>.now() - s1, <span class="string">"ms"</span>); <span class="comment">// All Fib cost:  2892 ms</span></span><br></pre></td></tr></table></figure>
+<p>在上面的例子中执行二次<code>fib</code>函数，每一次几乎执行相同时间，而我们可以看出第二次的计算完全是没有必要的，因为一般来说，函数在相同输入的情况下，输出值也是相同的。这种情况下可以使用<strong>高阶函数</strong>增强原有函数，使其拥有缓存计算结果的能力。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 缓存单个计算结果</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">memorizeOne</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> cache = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">let</span> cacheArgs = [];</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (</span><br><span class="line">      cache &amp;&amp;</span><br><span class="line">      cacheArgs.length === args.length &amp;&amp;</span><br><span class="line">      cacheArgs.every(<span class="function">(<span class="params">item, index</span>) =&gt;</span> item === cacheArgs[index])</span><br><span class="line">    ) &#123;</span><br><span class="line">      <span class="keyword">return</span> cache;</span><br><span class="line">    &#125;</span><br><span class="line">    cache = fn(...args);</span><br><span class="line">    cacheArgs = args;</span><br><span class="line">    <span class="keyword">return</span> cache;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">s1 = <span class="built_in">Date</span>.now();</span><br><span class="line">memoFib(<span class="number">40</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"1 MemoFib cost: "</span>, <span class="built_in">Date</span>.now() - s1, <span class="string">"ms"</span>); <span class="comment">// 1 MemoFib cost:  1435 ms</span></span><br><span class="line">s2 = <span class="built_in">Date</span>.now();</span><br><span class="line">memoFib(<span class="number">40</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"2 MemoFib cost: "</span>, <span class="built_in">Date</span>.now() - s2, <span class="string">"ms"</span>); <span class="comment">// 2 MemoFib cost:  0 ms</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"All MemoFib cost: "</span>, <span class="built_in">Date</span>.now() - s1, <span class="string">"ms"</span>); <span class="comment">// All MemoFib cost:  1435 ms</span></span><br></pre></td></tr></table></figure>
+<p>由于两次都是相同的输入，所以第二次计算时直接返回了上一次的结果，节约了大量的执行时间。</p>
+<blockquote>
+<p>缓存函数也可以设计成缓存多个值</p>
+</blockquote>
+<p>由于存储了额外的变量和数据，可以看出缓存函数是用<strong>空间换时间</strong>的一种优化方式。为了要先说这个呢，因为在 React 中，我们最重要的优化点在于减少组件虚拟 dom 的执行次数，而在减少渲染虚拟 dom 的核心点是减少组件<code>state</code>和<code>props</code>的变化（假设我们已经开启了<code>shouldComponentUpdate</code>优化），缓存函数可以减少<code>state</code>和<code>props</code>的变化，同时别忘了函数组件本身就是函数。下面我们将会看到缓存函数在 React 中的实际运用。</p>
+<h2 id="Hooks"><a href="#Hooks" class="headerlink" title="Hooks"></a>Hooks</h2><p>React 内置了很多基础的 hooks, 通过组合可以生成逻辑更复杂的 hooks。</p>
+<h3 id="useState"><a href="#useState" class="headerlink" title="useState"></a>useState</h3><p><code>useState</code>赋予了函数组件拥有状态的能力</p>
+<p><a href="https://codesandbox.io/s/long-firefly-nz5px?fontsize=14&amp;hidenavigation=1&amp;theme=dark" target="_blank" rel="noopener"><img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Edit long-firefly-nz5px"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; useState &#125; from &quot;react&quot;;</span><br><span class="line"></span><br><span class="line">function Child() &#123;</span><br><span class="line">  console.log(&quot;Child render&quot;);</span><br><span class="line">  return null;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default () =&gt; &#123;</span><br><span class="line">  const [count, setCount] = useState(0);</span><br><span class="line"></span><br><span class="line">  console.log(&quot;Render&quot;);</span><br><span class="line"></span><br><span class="line">  return (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;h2&gt;UseState&lt;/h2&gt;</span><br><span class="line">      &lt;p&gt;点击了&#123;count&#125;次&lt;/p&gt;</span><br><span class="line">      &lt;button</span><br><span class="line">        onClick=&#123;() =&gt; &#123;</span><br><span class="line">          setCount(count + 1);</span><br><span class="line">        &#125;&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        按钮+1</span><br><span class="line">      &lt;/button&gt;</span><br><span class="line">      &lt;button</span><br><span class="line">        onClick=&#123;() =&gt; &#123;</span><br><span class="line">          setCount(count);</span><br><span class="line">        &#125;&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        按钮不变</span><br><span class="line">      &lt;/button&gt;</span><br><span class="line">      &lt;Child /&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>文档：调用 State Hook 的更新函数并传入当前的 state 时，React 将跳过子组件的渲染及 effect 的执行。（React 使用 Object.is 比较算法 来比较 state。）</p>
+</blockquote>
+<p>也就是说，使用 hooks 组件可以理解成类组件的<code>PureComponent</code>。当我们点击 <strong>按钮不变</strong> 按钮式，组件并不会渲染（未输出 “Render” log）。值得一提的是，文档上只是承诺了跳过了子组件的渲染，如果我们先点击<code>+1</code>再点击<code>不变</code>，当前组件还是会打印<code>Render</code>，但是子组件确实是没有渲染的。<del>这个问题我在 github 提了<a href="https://github.com/facebook/react/issues/17672" target="_blank" rel="noopener">issue</a>，希望能找到原因。</del>文档的下一段就说明了这个原因（多么粗心的人！！！）</p>
+<blockquote>
+<p>需要注意的是，React 可能仍需要在跳过渲染前渲染该组件。不过由于 React 不会对组件树的“深层”节点进行不必要的渲染，所以大可不必担心。如果你在渲染期间执行了高开销的计算，则可以使用 useMemo 来进行优化。</p>
+</blockquote>
+<p>不过官方的回复还是有一些额外的信息值得参考</p>
+<blockquote>
+<p>The reasons for why this is can’t be explained without going fairly deep into the current implementation details- which probably wouldn’t be that useful and they’re likely to change in an upcoming release as we continue working on new APIs like concurrent mode and suspense.</p>
+</blockquote>
+<p>简单的说就是：你没必要了解那么多细节，知道怎么用就行了。。￣ □ ￣｜｜</p>
+<p>使用 useState 还有一些技巧。</p>
+<h4 id="函数初始化"><a href="#函数初始化" class="headerlink" title="函数初始化"></a>函数初始化</h4><p>State 的初始值需要一些复杂的计算，由于使用 hooks 只能在函数组件中使用，每一次渲染会时整个函数内部的代码都会执行一次。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Comp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 一些非常复杂的计算</span></span><br><span class="line">  <span class="keyword">const</span> initialState = someExpensiveCal();</span><br><span class="line">  <span class="keyword">const</span> [state, setState] = useState(initialState);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此 useState 可以传入一个函数，React 会保证这个函数只会在初始化执行，也就是相当于类组件的<code>contructor</code>。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Comp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> [state, setState] = useState(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 一些非常复杂的计算</span></span><br><span class="line">    <span class="keyword">return</span> someExpensiveCal();</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>类似于 setState，setCount 也可以传入一个回调函数</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> timer = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setCount(<span class="function"><span class="params">count</span> =&gt;</span> count + <span class="number">1</span>);</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    clearInterval(timer);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;, []); <span class="comment">// 这样可以不传入count，避免每次都会重启定时器</span></span><br></pre></td></tr></table></figure>
+<h4 id="forceUpdate"><a href="#forceUpdate" class="headerlink" title="forceUpdate"></a>forceUpdate</h4><p>上面提到了使用 useState 的状态是<strong>纯</strong>的，而 useState 并没有提供<code>forceUpdate</code>之类的方法，所以如果想要强制重新渲染组件。我们只能通过添加额外的状态来实现</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Comp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 一些非常复杂的计算</span></span><br><span class="line">  <span class="keyword">const</span> [count, setCount] = useState(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> forceUpdate = useCallback(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setCount(count + <span class="number">1</span>);</span><br><span class="line">  &#125;, [count]);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &lt;button onClick=&#123;forceUpdate&#125;&gt;强制刷新&lt;<span class="regexp">/button&gt;;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>或者自己写一个 hooks 来实现</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">useForceUpdate</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> [count, setCount] = useState(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> useCallback(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setCount(<span class="function"><span class="params">count</span> =&gt;</span> count + <span class="number">1</span>);</span><br><span class="line">  &#125;, []);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="useEffect"><a href="#useEffect" class="headerlink" title="useEffect"></a>useEffect</h3><p>useEffect 替换了<code>componentDidMount</code>,<code>componentWillUpdate</code>,<code>componentDidUpdate</code>,<code>componentWillUnmount</code>等生命周期函数，它使对状态改变的监听变得简单。</p>
+<p>如我们想在组件挂载后从远端加载数据</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; useState, useEffect &#125; <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> [count, setCount] = useState(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">const</span> [data, setData] = useState&lt;<span class="built_in">any</span>&gt;(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    fetch(<span class="string">"/data.json"</span>)</span><br><span class="line">      .then(<span class="function"><span class="params">res</span> =&gt;</span> res.text())</span><br><span class="line">      .then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">        setData(res);</span><br><span class="line">      &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;h2&gt;UseEffect&lt;<span class="regexp">/h2&gt;</span></span><br><span class="line"><span class="regexp">      &lt;p&gt;&#123;data&#125;&lt;/</span>p&gt;</span><br><span class="line">      &lt;button</span><br><span class="line">        onClick=&#123;<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">          setCount(count + <span class="number">1</span>);</span><br><span class="line">        &#125;&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        触发render</span><br><span class="line">      &lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在组件挂载后，<code>useEffect</code>的回调函数就会执行，而每次 render 回调函数都会执行。这当然不是我们想要的，所以可以传入第二参数 - 依赖数据列表。当传入的数据项没有变化时，回调函数就不会重新执行。如果不传入空数组，就相当于<code>componentDidMount</code></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  fetch(<span class="string">"/data.json"</span>)</span><br><span class="line">    .then(<span class="function"><span class="params">res</span> =&gt;</span> res.text())</span><br><span class="line">    .then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">      setData(res);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;, []);</span><br><span class="line"></span><br><span class="line">useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  fetch(<span class="string">"/data.json?count="</span> + count)</span><br><span class="line">    .then(<span class="function"><span class="params">res</span> =&gt;</span> res.text())</span><br><span class="line">    .then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">      setData(res);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;, [count]); <span class="comment">// 当count变化时会重新请求</span></span><br></pre></td></tr></table></figure>
+<p><a href="https://codesandbox.io/s/useeffect-n5lmk?fontsize=14&amp;hidenavigation=1&amp;theme=dark" target="_blank" rel="noopener"><img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Edit useEffect"></a></p>
+<p>useEffect 的回调函数支持返回一个函数，便于在 effect 重新执行前进行上一次操作需要清理的操作。比如</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> timer = setInterVal(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(count, <span class="keyword">new</span> <span class="built_in">Date</span>());</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    clearInterval(timer);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;, [count]);</span><br></pre></td></tr></table></figure>
+<p>这时我们会发现一个问题，我可能只是想输出 count，并不想将我的定时器中断，于是我们把 count 从依赖中移除。然后点击按钮后我们会发现，无论当前的 count 是多少，我们的定时器永远只会输出 0 了。</p>
+<p>想想我们的 count 来自于哪里？- 函数外部的组件。<br>外部组件是什么？- 函数。<br>函数内引用外部作用域变量在 javascript 中叫做什么？- 闭包！</p>
+<p>没错，每次 render 时我们的函数组件都会执行一遍，然后内部会生成新的闭包。记得我们最开始提到的<code>缓存函数</code>吗？如果把第二个参数数组看做函数的<code>arguments</code>，那么我们可以认为当其没有变化时，effect 的回调函数并没有刷新（也没有清理），所以第一次渲染时生成的回调函数仍然在运行着，而内部的 count 仍然是上一次渲染的组件函数内的 count。所以 count 始终为 0.</p>
+<p>那怎样才能不清理状态也能输出 count 呢，我们可以移花接木，通过组件变量来同步当前的状态值。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> countRef = useRef(<span class="number">0</span>); <span class="comment">// hooks函数组件通过ref保存变量并能保证在组件声明周期内不变</span></span><br><span class="line"></span><br><span class="line">useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  countRef.current = count;</span><br><span class="line">&#125;, [count]);</span><br><span class="line"></span><br><span class="line">useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> timer = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(countRef.current, <span class="keyword">new</span> <span class="built_in">Date</span>());</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"Clear..."</span>);</span><br><span class="line">    clearInterval(timer);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;, []); <span class="comment">// 由于Ref在组件声明周期是不变的，所以不需要写入依赖</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在 ui 频繁变动的情况下，使用 Ref 同步 state 可以有效的减少依赖变化引起了状态变更。</p>
+</blockquote>
+<h4 id="UI-更新"><a href="#UI-更新" class="headerlink" title="UI 更新"></a>UI 更新</h4><p>useEffect 的调用并非总在 ui 更新完成之后，也可能在状态更变和浏览器绘制之前，React 会更新当前浏览器的渲染状态动态选择。所以我们无法在 useEffect 获取 UI 更新。</p>
+<h3 id="useMemo"><a href="#useMemo" class="headerlink" title="useMemo"></a>useMemo</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">useMemo(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;, [a, b]);</span><br></pre></td></tr></table></figure>
+<p>useMemo 就是 Hooks 版本的 Memoization。</p>
+<h3 id="useCallback"><a href="#useCallback" class="headerlink" title="useCallback"></a>useCallback</h3><p>useCallback = (fn, deps)=&gt; useMemo(() =&gt; fn, deps)</p>
+<p>每一次 render 时，函数组件内部都会执行，内部的回调函数也会重新创建传给子组件。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ItemComp = React.memo(<span class="function">(<span class="params">props: ItemProps</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"Render:"</span>, props.data.id);</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div onClick=&#123;<span class="function"><span class="params">()</span> =&gt;</span> props.onClick(props.data)&#125; style=&#123;&#123; padding: <span class="number">10</span> &#125;&#125;&gt;</span><br><span class="line">      &#123;props.data.name&#125;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">function App() &#123;</span></span><br><span class="line"><span class="regexp">  const [now, setNow] = useState(new Date());</span></span><br><span class="line"><span class="regexp">  const [data] = useState(() =&gt; &#123;</span></span><br><span class="line"><span class="regexp">    const list = [];</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    for (let i = 0; i &lt; 100; i++) &#123;</span></span><br><span class="line"><span class="regexp">      list.push(&#123;</span></span><br><span class="line"><span class="regexp">        id: i,</span></span><br><span class="line"><span class="regexp">        name: i + "-" + getName()</span></span><br><span class="line"><span class="regexp">      &#125;);</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    return list;</span></span><br><span class="line"><span class="regexp">  &#125;);</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  useEffect(() =&gt; &#123;</span></span><br><span class="line"><span class="regexp">    const timer = setInterval(() =&gt; &#123;</span></span><br><span class="line"><span class="regexp">      setNow(new Date());</span></span><br><span class="line"><span class="regexp">    &#125;, 1000);</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    return () =&gt; &#123;</span></span><br><span class="line"><span class="regexp">      clearInterval(timer);</span></span><br><span class="line"><span class="regexp">    &#125;;</span></span><br><span class="line"><span class="regexp">  &#125;, []);</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  const handleClick = (item: Item) =&gt; &#123;</span></span><br><span class="line"><span class="regexp">    alert(item.name);</span></span><br><span class="line"><span class="regexp">  &#125;;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  return (</span></span><br><span class="line"><span class="regexp">    &lt;div&gt;</span></span><br><span class="line"><span class="regexp">      &lt;h2&gt;useCallback&lt;/</span>h2&gt;</span><br><span class="line">      &lt;p&gt;&#123;now.toString()&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">      &lt;div style=&#123;&#123; height: 300, overflow: "auto" &#125;&#125;&gt;</span></span><br><span class="line"><span class="regexp">        &#123;data.map(item =&gt; (</span></span><br><span class="line"><span class="regexp">          &lt;ItemComp key=&#123;item.id&#125; data=&#123;item&#125; onClick=&#123;handleClick&#125; /</span>&gt;</span><br><span class="line">        ))&#125;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://codesandbox.io/s/stupefied-haslett-fvjw0?fontsize=14&amp;hidenavigation=1&amp;theme=dark" target="_blank" rel="noopener"><img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Edit useCallback"></a></p>
+<p>在这个长列表的 demo 中，我们可以在控制台中发现，每一次定时器的更新，都会触发子组件的重新渲染。</p>
+<h2 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h2>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/react/" rel="tag"># react</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/nextjs-with-sentry/" rel="next" title="nextjs+koa集成sentry">
+                <i class="fa fa-chevron-left"></i> nextjs+koa集成sentry
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/webpack-event-module-tapable/" rel="prev" title="Webpack事件流模块-tapable">
+                Webpack事件流模块-tapable <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="杨骐彰" />
+            
+              <p class="site-author-name" itemprop="name">杨骐彰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yqz0203" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yqz0203@hotmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                BigOld
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://suoxuejiyong.com/" title="Suoxuejiyong" target="_blank">Suoxuejiyong</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存函数（Memoization）"><span class="nav-number">1.</span> <span class="nav-text">缓存函数（Memoization）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hooks"><span class="nav-number">2.</span> <span class="nav-text">Hooks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#useState"><span class="nav-number">2.1.</span> <span class="nav-text">useState</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#函数初始化"><span class="nav-number">2.1.1.</span> <span class="nav-text">函数初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#forceUpdate"><span class="nav-number">2.1.2.</span> <span class="nav-text">forceUpdate</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#useEffect"><span class="nav-number">2.2.</span> <span class="nav-text">useEffect</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UI-更新"><span class="nav-number">2.2.1.</span> <span class="nav-text">UI 更新</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#useMemo"><span class="nav-number">2.3.</span> <span class="nav-text">useMemo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#useCallback"><span class="nav-number">2.4.</span> <span class="nav-text">useCallback</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#未完待续"><span class="nav-number">3.</span> <span class="nav-text">未完待续</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杨骐彰</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+  <div class="footer-custom"><a href="https://beian.miit.gov.cn">蜀ICP备2021011553号</a></div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyvSj2uP4';
+      var conf = 'db9e8dbec18728e32caa823f1d7add74';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

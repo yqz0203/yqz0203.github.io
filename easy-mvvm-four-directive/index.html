@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="mvvm," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="我们都知道 html 元素是通过标签属性来控制其效果的，例如video的control属性，虽然只是一个简单的值，但是内部会有很复杂的实现：添加了video播放的视频的控制功能。而很多情况下，html 内置的属性无法满足千变万化的需求，于是指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性不支持功能。">
+<meta name="keywords" content="mvvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="简单易懂的MVVM实现之指令（四）">
+<meta property="og:url" content="https://yqz0203.github.io/easy-mvvm-four-directive/index.html">
+<meta property="og:site_name" content="QiZhang&#39;s Blog">
+<meta property="og:description" content="我们都知道 html 元素是通过标签属性来控制其效果的，例如video的control属性，虽然只是一个简单的值，但是内部会有很复杂的实现：添加了video播放的视频的控制功能。而很多情况下，html 内置的属性无法满足千变万化的需求，于是指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性不支持功能。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-18T02:14:40.513Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="简单易懂的MVVM实现之指令（四）">
+<meta name="twitter:description" content="我们都知道 html 元素是通过标签属性来控制其效果的，例如video的control属性，虽然只是一个简单的值，但是内部会有很复杂的实现：添加了video播放的视频的控制功能。而很多情况下，html 内置的属性无法满足千变万化的需求，于是指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性不支持功能。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://yqz0203.github.io/easy-mvvm-four-directive/"/>
+
+
+
+
+
+  <title>简单易懂的MVVM实现之指令（四） | QiZhang's Blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-127594279-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">QiZhang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Life just like code</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yqz0203.github.io/easy-mvvm-four-directive/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杨骐彰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QiZhang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">简单易懂的MVVM实现之指令（四）</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T14:35:00+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2019-11-18T10:14:40+08:00">
+                2019-11-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端技术/" itemprop="url" rel="index">
+                    <span itemprop="name">前端技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/easy-mvvm-four-directive/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="easy-mvvm-four-directive/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我们都知道 html 元素是通过标签属性来控制其效果的，例如<code>video</code>的<code>control</code>属性，虽然只是一个简单的值，但是内部会有很复杂的实现：添加了<code>video</code>播放的视频的控制功能。而很多情况下，html 内置的属性无法满足千变万化的需求，于是指令（directive）便应运而生。指令最直观的理解就是扩展 html 属性，从而实现内置属性不支持功能。</p>
+<a id="more"></a>
+<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><p>指令有<code>初始化-&gt;更新-&gt;销毁</code>三个生命周期。</p>
+<h3 id="初始化-bind"><a href="#初始化-bind" class="headerlink" title="初始化 bind"></a>初始化 bind</h3><p>bind 发生下模板初始化时，解析到指令后就会将指令进行初始化。</p>
+<h3 id="更新-update"><a href="#更新-update" class="headerlink" title="更新 update"></a>更新 update</h3><p>当指令绑定的值发生变化时，指令可以接收到更新的值，并进行对应的操作。</p>
+<h3 id="销毁-unbind"><a href="#销毁-unbind" class="headerlink" title="销毁 unbind"></a>销毁 unbind</h3><p>当模板卸载时，模板上面的指令也会一并销毁，如果指令中存在事件绑定，定时器等，应该在销毁时进行清理。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="指令的声明"><a href="#指令的声明" class="headerlink" title="指令的声明"></a>指令的声明</h3><p>指令在整个应用的模板上都应该是有效的，所以指令的声明要在全局使用，因此我们选择在 MVVM 对象上暴露一个静态方法全局声明指令。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> MVVM &#123;</span><br><span class="line">  <span class="keyword">static</span> directive = <span class="function"><span class="keyword">function</span>(<span class="params">name: <span class="built_in">string</span>, config: DirectiveConfig</span>) </span>&#123;</span><br><span class="line">    directiveConfigMap.set(name, config);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>声明一个<code>foo</code>指令：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MVVM.directive(<span class="string">'foo'</span>, &#123;</span><br><span class="line">  bind(el: <span class="built_in">any</span>, binding) &#123;&#125;,</span><br><span class="line">  update(el: <span class="built_in">any</span>, binding) &#123;&#125;,</span><br><span class="line">  unbind(el) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>在多数情况下，指令并不需要在卸载时进行操作，为了方便起见，我们也支持传入一个函数简写，替换<code>bind</code>和<code>update</code>。在指令<code>bind</code>和<code>update</code>生命周期触发时，这个函数都会触发。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MVVM.directive(<span class="string">'bar'</span>, (el: <span class="built_in">any</span>, binding) &#123;&#125;,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>指令的实现并不复杂，原理和<code>Complier</code>类似，都是解析表达式，然后通过<code>Watcher</code>对数据进行监听，并在数据变动时触发对应的生命周期回调。</p>
+<h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><p>构造函数接受以下参数</p>
+<ul>
+<li><code>owner</code>- MVVM 上下文</li>
+<li><code>el</code> - dom 节点</li>
+<li><code>exp</code> - 表达式</li>
+<li><code>config</code> - 上文中的指令的声明配置</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Directive <span class="keyword">implements</span> IDestroy &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">    owner: IOwner,</span></span><br><span class="line"><span class="params">    el: HTMLElement,</span></span><br><span class="line"><span class="params">    exp: <span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">    config: DirectiveConfig</span></span><br><span class="line"><span class="params">  </span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解析表达式，并监听所有依赖项的更改事件，添加到上下文的<code>$watcher</code>中。并将计算的值作为<code>value</code>传递给指令的<code>update</code>生命周期。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; expression, dependencies &#125; = parseExpression(exp, <span class="string">'this.$owner'</span>);</span><br><span class="line"><span class="keyword">const</span> fn = <span class="keyword">new</span> <span class="built_in">Function</span>(<span class="string">'return '</span> + expression).bind(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">this</span>.listener = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> value = fn();</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.config.update) &#123;</span><br><span class="line">    <span class="keyword">this</span>.config.update.call(<span class="keyword">this</span>, el, &#123; value, expression: exp &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">dependencies.forEach(<span class="function"><span class="params">dp</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">this</span>.$owner.$watcher.addListener(dp, <span class="keyword">this</span>.listener);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">this</span>.removeListeners = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  dependencies.forEach(<span class="function"><span class="params">dp</span> =&gt;</span></span><br><span class="line">    <span class="keyword">this</span>.$owner.$watcher.removeListener(dp, <span class="keyword">this</span>.listener)</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在构造函数中触发指令的<code>bind</code>函数。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.config.bind.call(<span class="keyword">this</span>, el, &#123;</span><br><span class="line">  value: fn(),</span><br><span class="line">  expression: exp,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="销毁"><a href="#销毁" class="headerlink" title="销毁"></a>销毁</h3><p>实现<code>IDestroy</code>接口，注销在<code>$watcher</code>上的事件监听，并触发<code>unBind</code>生命周期。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">destroy() &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.config.unbind) &#123;</span><br><span class="line">    <span class="keyword">this</span>.config.unbind.call(<span class="keyword">this</span>, <span class="keyword">this</span>.$el);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">this</span>.removeListeners();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="指令前缀"><a href="#指令前缀" class="headerlink" title="指令前缀"></a>指令前缀</h3><p>为了区分指令与原生属性，我们需要加入<code>x-</code>作为前缀。</p>
+<h3 id="Compiler-中处理指令"><a href="#Compiler-中处理指令" class="headerlink" title="Compiler 中处理指令"></a>Compiler 中处理指令</h3><p>在<a href="/easy-mvvm-two-compiler/">Complier</a>一文中，由于还未接触指令，我们并没有处理，现在让我们补全吧。</p>
+<p>在属性遍历时，如果需要属性以约定的前缀开头，则认为是指令。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">attributes.forEach(<span class="function"><span class="params">attr</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (!attr) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 指令</span></span><br><span class="line">  <span class="keyword">if</span> (attr.name.startsWith(DIRECTIVE_PREFIX)) &#123;</span><br><span class="line">    <span class="keyword">this</span>.initDirective(node, attr);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>将指令的属性从 html 标签上移除，让标签看起来干净点。从指令配置表中找到这个指令的配置后，进行初始化，并将识别到的指令保存在<code>Compiler</code>的指令集合中，当<code>Complier</code>销毁时，内部的指令也需要一并销毁。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> initDirective(node: <span class="built_in">any</span>, attr: Attr) &#123;</span><br><span class="line">  node.removeAttribute(attr.name);</span><br><span class="line">  <span class="keyword">const</span> directiveName = attr.name.replace(</span><br><span class="line">    <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">'^'</span> + DIRECTIVE_PREFIX),</span><br><span class="line">    <span class="string">''</span></span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">const</span> dd = directiveConfigMap.get(directiveName);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!dd) &#123;</span><br><span class="line">    <span class="built_in">console</span>.warn(<span class="string">'未知的指令：'</span>, directiveName);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> directive = <span class="keyword">new</span> Directive(<span class="keyword">this</span>.owner, node, attr.value, dd);</span><br><span class="line">    <span class="keyword">this</span>.directives.push(directive);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> directive;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="优先级与子作用域"><a href="#优先级与子作用域" class="headerlink" title="优先级与子作用域"></a>优先级与子作用域</h3><p>有些特殊类型的指令，例如<code>if</code>会控制一个模板块的销毁和重建，因此它的优先级是高于其他指令的。</p>
+<p>同时，由于模板块需要重建和销毁，而模板的数据是来自当前 MVVM 作用域的，因此需要创建一个子作用域来控制销毁和重建，而子作用域的数据来自于父作用域。</p>
+<blockquote>
+<p>如果<code>if</code>不销毁模板块，而只是控制 Dom 节点的渲染，那么模板块中的指令和组件可能会出现令人困惑的情况：页面上元素不存在却没有销毁（可能仍然在内存中）。而且这样与<code>show</code>指令功能似乎有点重叠。</p>
+</blockquote>
+<p>通过加入指令的配置项<code>scoped</code>，我们告诉<code>Compiler</code>不要继续解析这个指令所在元素的子元素了。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (directive &amp;&amp; directive.$scoped) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而子作用域除了实现与作用域的相同接口外，监听了父级所有数据的更改，并触发内部的更改。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> ChildScope <span class="keyword">implements</span> IOwner &#123;</span><br><span class="line">  [key: <span class="built_in">string</span>]: <span class="built_in">any</span>;</span><br><span class="line">  $parent: IOwner;</span><br><span class="line">  $watcher: Watcher;</span><br><span class="line">  $el: <span class="built_in">any</span>;</span><br><span class="line">  $complier: Compiler;</span><br><span class="line">  $parentListener = <span class="function">(<span class="params">n: <span class="built_in">any</span>, o: <span class="built_in">any</span>, p: <span class="built_in">string</span></span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.$watcher.trigger(p, n, o);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params">el: <span class="built_in">any</span>, parent: IOwner</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.$parent = parent;</span><br><span class="line">    <span class="keyword">this</span>.$el = el;</span><br><span class="line">    <span class="keyword">this</span>.$watcher = <span class="keyword">new</span> Watcher(<span class="keyword">this</span>, &#123;&#125;);</span><br><span class="line">    <span class="keyword">this</span>.$complier = <span class="keyword">new</span> Compiler(<span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">this</span>.$complier.init();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.$parent.$watcher.addListener(<span class="string">''</span>, <span class="keyword">this</span>.$parentListener);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  getValue(path: <span class="built_in">string</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> val = getValue(<span class="keyword">this</span>, path);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (val === <span class="literal">undefined</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.$parent.getValue(path);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> val;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  setData(newData: <span class="built_in">any</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.$parent.setData(newData);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  getEvent(name: <span class="built_in">string</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.$parent.getEvent(name);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  destroy() &#123;</span><br><span class="line">    <span class="keyword">this</span>.$complier.destroy();</span><br><span class="line">    <span class="keyword">this</span>.$watcher.removeAllListeners();</span><br><span class="line">    <span class="keyword">this</span>.$parent.$watcher.removeListener(<span class="string">''</span>, <span class="keyword">this</span>.$parentListener);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="实现常用指令"><a href="#实现常用指令" class="headerlink" title="实现常用指令"></a>实现常用指令</h2><h3 id="show"><a href="#show" class="headerlink" title="show"></a><code>show</code></h3><p>用于控制元素的显隐。</p>
+<p>实现非常简单，由于不需要在销毁时做额外处理，所以用简写形式实现。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MVVM.directive(<span class="string">'show'</span>, <span class="function">(<span class="params">el, binding</span>) =&gt;</span> &#123;</span><br><span class="line">  el.style.display = binding.value ? <span class="string">''</span> : <span class="string">'none'</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="model"><a href="#model" class="headerlink" title="model"></a><code>model</code></h3><p>用于实现表单元素与数据的绑定。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">MVVM.directive(<span class="string">'model'</span>, &#123;</span><br><span class="line">  bind(el: <span class="built_in">any</span>, binding) &#123;</span><br><span class="line">    <span class="keyword">this</span>.callback = <span class="function">(<span class="params">e: <span class="built_in">any</span></span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> val = e.target.value;</span><br><span class="line">      <span class="keyword">this</span>.$owner.setData(&#123; [binding.expression]: val &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line">    el.addEventListener(<span class="string">'input'</span>, <span class="keyword">this</span>.callback);</span><br><span class="line">    <span class="comment">// 省略其他表单类型</span></span><br><span class="line">    el.value = binding.value;</span><br><span class="line">  &#125;,</span><br><span class="line">  update(el: <span class="built_in">any</span>, binding) &#123;</span><br><span class="line">    <span class="keyword">if</span> (el.value === binding.value) <span class="keyword">return</span>;</span><br><span class="line">    el.value = binding.value;</span><br><span class="line">  &#125;,</span><br><span class="line">  unbind(el) &#123;</span><br><span class="line">    el.removeEventListener(<span class="string">'input'</span>, <span class="keyword">this</span>.callback);</span><br><span class="line">    <span class="comment">// 省略其他表单类型</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="if"><a href="#if" class="headerlink" title="if"></a><code>if</code></h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">MVVM.directive(<span class="string">'if'</span>, &#123;</span><br><span class="line">  scoped: <span class="literal">true</span>,</span><br><span class="line">  bind(el: HTMLElement, binding) &#123;</span><br><span class="line">    <span class="keyword">const</span> html = el.outerHTML;</span><br><span class="line">    <span class="keyword">this</span>.cEl = <span class="built_in">document</span>.createComment(<span class="string">'-- if block --'</span>);</span><br><span class="line">    <span class="keyword">this</span>.el = el;</span><br><span class="line">    <span class="keyword">this</span>.onHide = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.childScope &amp;&amp; <span class="keyword">this</span>.childScope.destroy();</span><br><span class="line">      <span class="keyword">this</span>.el.replaceWith(<span class="keyword">this</span>.cEl);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.onShow = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">let</span> nEl: <span class="built_in">any</span> = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line">      nEl.innerHTML = html;</span><br><span class="line">      nEl = nEl.firstChild;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">this</span>.el.replaceWith(nEl);</span><br><span class="line">      <span class="keyword">this</span>.el = nEl;</span><br><span class="line">      <span class="keyword">this</span>.childScope = <span class="keyword">new</span> ChildScope(<span class="keyword">this</span>.el, <span class="keyword">this</span>.$owner);</span><br><span class="line">      <span class="keyword">this</span>.cEl.replaceWith(<span class="keyword">this</span>.el);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (binding.value === <span class="literal">false</span>) &#123;</span><br><span class="line">      <span class="keyword">this</span>.onHide();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.onShow();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  update(el: <span class="built_in">any</span>, binding) &#123;</span><br><span class="line">    <span class="keyword">if</span> (binding.value === <span class="literal">false</span>) &#123;</span><br><span class="line">      <span class="keyword">this</span>.onHide();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.onShow();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  unbind(el) &#123;</span><br><span class="line">    <span class="keyword">this</span>.onHide();</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="使用指令"><a href="#使用指令" class="headerlink" title="使用指令"></a>使用指令</h2><p>下面模拟了应用的三步提交过程。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">x-if</span>=<span class="string">"!complete"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span><span class="tag">&lt;<span class="name">span</span> <span class="attr">x-if</span>=<span class="string">"step === 1"</span>&gt;</span>欢迎注册，<span class="tag">&lt;/<span class="name">span</span>&gt;</span>第 &#123;&#123; step &#125;&#125; 步<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">x-if</span>=<span class="string">"step === 1"</span>&gt;</span></span><br><span class="line">      姓名：<span class="tag">&lt;<span class="name">input</span> <span class="attr">x-model</span>=<span class="string">"value1"</span> <span class="attr">:disabled</span>=<span class="string">"submiting"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">x-if</span>=<span class="string">"step === 2"</span>&gt;</span></span><br><span class="line">      性别：<span class="tag">&lt;<span class="name">select</span> <span class="attr">x-model</span>=<span class="string">"value2"</span> <span class="attr">:disabled</span>=<span class="string">"submiting"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">""</span>&gt;</span>请选择<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">"1"</span>&gt;</span>男<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">"0"</span>&gt;</span>女<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">x-if</span>=<span class="string">"step === 3"</span>&gt;</span></span><br><span class="line">      公司：<span class="tag">&lt;<span class="name">input</span> <span class="attr">x-model</span>=<span class="string">"value3"</span> <span class="attr">:disabled</span>=<span class="string">"submiting"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">"next"</span>&gt;</span>&#123;&#123; step === 3 ? '提交' : '下一步' &#125;&#125;<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">x-if</span>=<span class="string">"complete"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>您的信息：<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>姓名：&#123;&#123; value1 &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>性别：&#123;&#123; gender &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>公司：&#123;&#123; value3 &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"./dist/main.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="keyword">new</span> MVVM(&#123;</span></span><br><span class="line"><span class="javascript">    el: <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>),</span></span><br><span class="line"><span class="undefined">    data: &#123;</span></span><br><span class="line"><span class="javascript">      complete: <span class="literal">false</span>,</span></span><br><span class="line"><span class="javascript">      submiting: <span class="literal">false</span>,</span></span><br><span class="line"><span class="undefined">      step: 1,</span></span><br><span class="line"><span class="javascript">      value1: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">      value2: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">      value3: <span class="string">''</span>,</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    computed: &#123;</span></span><br><span class="line"><span class="undefined">      gender: [</span></span><br><span class="line"><span class="javascript">        <span class="string">'value2'</span>,</span></span><br><span class="line"><span class="javascript">        <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">switch</span> (<span class="keyword">this</span>.value2) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">case</span> <span class="string">'1'</span>:</span></span><br><span class="line"><span class="javascript">              <span class="keyword">return</span> <span class="string">'男'</span>;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">case</span> <span class="string">'0'</span>:</span></span><br><span class="line"><span class="javascript">              <span class="keyword">return</span> <span class="string">'女'</span>;</span></span><br><span class="line"><span class="undefined">          &#125;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">return</span> <span class="string">'未知'</span>;</span></span><br><span class="line"><span class="undefined">        &#125;,</span></span><br><span class="line"><span class="undefined">      ],</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    methods: &#123;</span></span><br><span class="line"><span class="undefined">      next(e, count) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.submiting = <span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.submiting = <span class="literal">false</span>;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (<span class="keyword">this</span>.step === <span class="number">3</span>) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>.complete = <span class="literal">true</span>;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span>;</span></span><br><span class="line"><span class="undefined">          &#125;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.step++;</span></span><br><span class="line"><span class="undefined">        &#125;, 1000);</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">  &#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><a href="https://codepen.io/yqz0203/pen/BaBKgzY" target="_blank" rel="noopener">在线 demo</a><br><a href="https://github.com/yqz0203/blog-demos/tree/master/mvvm/src/Directive.ts" target="_blank" rel="noopener">源码</a></p>
+<h2 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h2><p>大家会发现一直没有提及一个非常常用的指令 - 循环指令<code>for</code>。因为<code>for</code>指令比较特殊，相对于其他指令更加复杂。所以后续我们将单独实现它。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mvvm/" rel="tag"># mvvm</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/easy-mvvm-three-mvvm/" rel="next" title="简单易懂的MVVM实现之数据驱动模板（三）">
+                <i class="fa fa-chevron-left"></i> 简单易懂的MVVM实现之数据驱动模板（三）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/realize-browser-cache/" rel="prev" title="理解浏览器缓存">
+                理解浏览器缓存 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="杨骐彰" />
+            
+              <p class="site-author-name" itemprop="name">杨骐彰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yqz0203" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yqz0203@hotmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                BigOld
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://suoxuejiyong.com/" title="Suoxuejiyong" target="_blank">Suoxuejiyong</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期"><span class="nav-number">1.</span> <span class="nav-text">生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化-bind"><span class="nav-number">1.1.</span> <span class="nav-text">初始化 bind</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新-update"><span class="nav-number">1.2.</span> <span class="nav-text">更新 update</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#销毁-unbind"><span class="nav-number">1.3.</span> <span class="nav-text">销毁 unbind</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-number">2.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#指令的声明"><span class="nav-number">2.1.</span> <span class="nav-text">指令的声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码实现"><span class="nav-number">2.2.</span> <span class="nav-text">代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#构造函数"><span class="nav-number">2.2.1.</span> <span class="nav-text">构造函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#销毁"><span class="nav-number">2.3.</span> <span class="nav-text">销毁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指令前缀"><span class="nav-number">2.4.</span> <span class="nav-text">指令前缀</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Compiler-中处理指令"><span class="nav-number">2.5.</span> <span class="nav-text">Compiler 中处理指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优先级与子作用域"><span class="nav-number">2.6.</span> <span class="nav-text">优先级与子作用域</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现常用指令"><span class="nav-number">3.</span> <span class="nav-text">实现常用指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#show"><span class="nav-number">3.1.</span> <span class="nav-text">show</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#model"><span class="nav-number">3.2.</span> <span class="nav-text">model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#if"><span class="nav-number">3.3.</span> <span class="nav-text">if</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用指令"><span class="nav-number">4.</span> <span class="nav-text">使用指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下一步"><span class="nav-number">5.</span> <span class="nav-text">下一步</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杨骐彰</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+  <div class="footer-custom"><a href="https://beian.miit.gov.cn">蜀ICP备2021011553号</a></div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyvSj2uP4';
+      var conf = 'db9e8dbec18728e32caa823f1d7add74';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
