@@ -6,10 +6,10 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -40,7 +40,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -48,9 +48,9 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="身份验证,Http," />
+  <meta name="keywords" content="身份验证,Http,">
 
 
 
@@ -84,13 +84,13 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="HTTP Basic Authentication">
 <meta property="og:url" content="https://yqz0203.github.io/http-basic-authentication/index.html">
-<meta property="og:site_name" content="QiZhang&#39;s Blog">
+<meta property="og:site_name" content="技术学习生活分享">
 <meta property="og:description" content="身份验证又称鉴权，是获取一个资源前的一个校验过程。比如你要进入一栋锁着的房子，必须通过拿出钥匙开锁才能进入。这里的”钥匙“我们一般称为”凭据“（token）。我们开发过程中会使用很多种不同的鉴权方案，具体实现一般跟业务相关。Http 协议自身也约定了一些鉴权方式，让我们来看看吧。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://yqz0203.github.io/images/http_oauth/basic_flow.png">
 <meta property="og:image" content="https://yqz0203.github.io/images/http_oauth/demo1.png">
 <meta property="og:image" content="https://yqz0203.github.io/images/http_oauth/demo2.png">
-<meta property="og:updated_time" content="2020-05-20T02:16:07.176Z">
+<meta property="og:updated_time" content="2020-05-20T02:16:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTTP Basic Authentication">
 <meta name="twitter:description" content="身份验证又称鉴权，是获取一个资源前的一个校验过程。比如你要进入一栋锁着的房子，必须通过拿出钥匙开锁才能进入。这里的”钥匙“我们一般称为”凭据“（token）。我们开发过程中会使用很多种不同的鉴权方案，具体实现一般跟业务相关。Http 协议自身也约定了一些鉴权方式，让我们来看看吧。">
@@ -124,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="https://yqz0203.github.io/http-basic-authentication/"/>
+  <link rel="canonical" href="https://yqz0203.github.io/http-basic-authentication/">
 
 
 
 
 
-  <title>HTTP Basic Authentication | QiZhang's Blog</title>
+  <title>HTTP Basic Authentication | 技术学习生活分享</title>
   
 
 
@@ -151,7 +151,7 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -161,20 +161,20 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">QiZhang's Blog</span>
+        <span class="site-title">技术学习生活分享</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
       
-        <h1 class="site-subtitle" itemprop="description">Life just like code</h1>
+        <h1 class="site-subtitle" itemprop="description">QiZhang's Blog</h1>
       
   </div>
 
@@ -197,7 +197,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -207,7 +207,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -217,7 +217,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -227,7 +227,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -261,21 +261,21 @@
   
   
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://yqz0203.github.io/http-basic-authentication/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="杨骐彰">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.png">
     </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="QiZhang's Blog">
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="技术学习生活分享">
     </span>
 
     
@@ -318,7 +318,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -329,7 +329,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
                   <a href="/categories/Server技术/" itemprop="url" rel="index">
                     <span itemprop="name">Server技术</span>
                   </a>
@@ -362,7 +362,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv"><i class="fa fa-file-o"></i>
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
             </span>
           
 
@@ -370,7 +370,7 @@
 
           
 
-        </div>
+        </span></div>
       </header>
     
 
@@ -523,11 +523,9 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.png"
-                alt="杨骐彰" />
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="杨骐彰">
             
               <p class="site-author-name" itemprop="name">杨骐彰</p>
               <p class="site-description motion-element" itemprop="description"></p>
